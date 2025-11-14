@@ -9,7 +9,7 @@
             font-family: 'Times New Roman', cursive;
             margin: 0;
             padding: 0;
-            background: url('static/images/1.jpg') center/cover no-repeat fixed;
+            background: url('static/images/4.jpg') center/cover no-repeat fixed;
         }
 
         header {
@@ -42,6 +42,38 @@
             color: #4CAF50;
         }
 
+        form {
+            float: right;
+            margin-top: 14px;
+            margin-right: 16px;
+        }
+
+        form label {
+            margin-right: 8px;
+            color: white;
+        }
+
+        form input[type="text"] {
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        form button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #333;
+        }
+
         section {
             padding: 20px;
             background-color: rgba(255, 255, 255, 0.9);
@@ -49,7 +81,7 @@
             border-radius: 10px;
             margin: 20px;
             transition: box-shadow 0.3s;
-            text-align: center;
+            text-align: center; /* Center aligning content */
         }
 
         section:hover {
@@ -59,6 +91,11 @@
         h1 {
             margin: 0;
             font-size: 2em;
+        }
+
+        p {
+            margin: 20px 0;
+            font-size: 1.2em;
         }
 
         table {
@@ -78,7 +115,7 @@
         }
 
         td {
-            text-align: left;
+            text-align: center;
         }
 
         .add-to-cart-button {
@@ -95,52 +132,98 @@
             background-color: #333;
         }
 
-        form.search-form {
-            float: right;
-            margin-top: 14px;
-            margin-right: 16px;
-        }
-
-        form.search-form label {
-            margin-right: 8px;
-            color: white;
-        }
-
-        form.search-form input[type="text"] {
-            padding: 8px;
-            border: 1px solid #4CAF50;
-            border-radius: 4px;
-            outline: none;
-        }
-
-        form.search-form button {
-            padding: 8px 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        form.search-form button:hover {
-            background-color: #333;
-        }
         .book-cover {
-          width: 80px;
-          height: 110px;
-          object-fit: cover;
-          border-radius: 6px;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-          display: block;
-          margin: 5px auto;
+            width: 80px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            display: block;
+            margin: 5px auto;
+        }
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .action-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .action-form input[type="number"] {
+            width: 55px;
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 5px;
+            box-sizing: border-box;
+        }
+
+        .toast-message {
+            visibility: hidden;
+            min-width: 300px;
+            padding: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            -webkit-animation: fadein 0.2s, fadeout 0.2s 0.8s;
+            animation: fadein 0.2s, fadeout 0.2s 0.8s;
+        }
+
+        .toast-message.show {
+            visibility: visible;
+        }
+
+        @-webkit-keyframes fadein {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Xem thể loại sách</h1>
+        <h1>XEM THỂ LOẠI SÁCH</h1>
     </header>
 
     <nav>
@@ -159,7 +242,7 @@
             <button type="submit">Tìm kiếm</button>
         </form>
     </nav>
-    
+
     <section>
         <table bgcolor "white">
             <tr>
@@ -184,7 +267,7 @@
             </td>
                 <td>{{ book.author }}</td>
                 <td>{{ book.description }}</td>
-                <td>{{ book.price }} đ</td>
+                <td>{{ "{:,.0f}".format(book.price) }} đ</td>
                 <td> <form action="{{ url_for('add_to_cart') }}" method="post">
                     <input type="hidden" name="book_id" value="{{ book.id }}">
                     <input type="hidden" name="book_name" value="{{ book.name }}">

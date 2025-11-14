@@ -106,7 +106,7 @@
 <body>
 
 <header>
-    <h1>Thư viện đẹp</h1>
+    <h1>Thể loại sách</h1>
 </header>
 
 <nav>
@@ -129,7 +129,7 @@
                 <p><strong>Tác giả:</strong> {{ book.author or "Không rõ" }}</p>
                 <p><strong>Mô tả:</strong> {{ book.description }}</p>
                 <p><strong>Số lượng:</strong> {{ book.quantity }}</p>
-                <p><strong>Giá:</strong> {{ book.price }} VNĐ</p>
+                <p><strong>Giá:</strong> {{ "{:,.0f}".format(book.price) }} đ</p>
             </div>
         </div>
     </a>

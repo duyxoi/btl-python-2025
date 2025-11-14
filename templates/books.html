@@ -123,6 +123,15 @@
             margin: 0;
             font-size: 2em;
         }
+        .book-cover {
+            width: 80px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            display: block;
+            margin: 5px auto;
+        }
     </style>
 </head>
 <body>
@@ -138,13 +147,13 @@
     <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
     <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
     <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
-
-
 </nav>
 <section>
+    <button><a href="{{ url_for('add_book') }}">Thêm sách</a></button>
+    <button><a href="{{ url_for('delete_books') }}">Xóa sách</a></button>
     <table>
         <tr>
-            <th>ID sách</th>
+            <th>Hình ảnh</th>
             <th>Tên sách</th>
             <th>Tác giả</th>
             <th>Thể loại</th>
@@ -155,7 +164,10 @@
         </tr>
         {% for book in books %}
         <tr>
-            <td>{{ book.id }}</td>
+            <td style="width:100px;">
+                <img src="{{ book.image_url or url_for('static', filename='covers/placeholder.jpg') }}"
+                     alt="{{ book.name }}" class="book-cover">
+            </td>
             <td>
                 <a href="{{ url_for('detail_product', product_id=book.id) }}"
                    style="text-decoration: none; color: #333; font-weight: bold;">
@@ -166,7 +178,7 @@
             <td>{{ book.category }}</td>
             <td>{{ book.description }}</td>
             <td>{{ book.quantity }}</td>
-            <td>{{ book.price }}</td>
+            <td>{{ "{:,.0f}".format(book.price) }} đ</td>
             <td>
                 <button><a href="{{ url_for('edit_book', id=book.id) }}">Chỉnh sửa</a></button>
             </td>
@@ -174,8 +186,7 @@
         {% endfor %}
     </table>
     <br>
-    <button><a href="{{ url_for('add_book') }}">Thêm sách</a></button>
-    <button><a href="{{ url_for('delete_books') }}">Xóa sách</a></button>
+
 </section>
 
 </body>

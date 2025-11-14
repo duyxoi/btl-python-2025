@@ -20,73 +20,23 @@
             text-align: center;
         }
 
-        /* [START] SỬA LỖI FLEXBOX CHO NAV */
         nav {
             background-color: #4CAF50;
             overflow: hidden;
-            display: flex; /* Kích hoạt Flexbox */
-            justify-content: space-between; /* Đẩy links và form ra hai bên */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            padding: 0 16px;
-        }
-
-        .nav-links {
-            display: flex; /* Nhóm các liên kết lại */
-            align-items: center;
         }
 
         nav a {
-            display: block; /* Bỏ float */
+            float: left;
             color: white;
             text-align: center;
-            padding: 14px 0; /* Chỉ padding dọc */
-            margin-right: 16px; /* Khoảng cách giữa các liên kết */
+            padding: 14px 16px;
             text-decoration: none;
-            transition: background-color 0.3s;
-            border-bottom: 2px solid transparent;
         }
 
         nav a:hover {
             background-color: #333;
         }
 
-        form {
-            margin: 0;
-            padding: 14px 0; /* Padding khớp với nav a */
-            display: flex;
-            align-items: center;
-        }
-
-        form label {
-            margin-right: 8px;
-            color: white;
-        }
-
-        form input[type="text"] {
-            width: 150px; 
-            padding: 8px;
-            border: 1px solid #4CAF50;
-            border-radius: 4px;
-            outline: none;
-        }
-
-        form button {
-            padding: 8px 12px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-left: 5px;
-        }
-
-        form button:hover {
-            background-color: #333;
-        }
-        /* [END] SỬA LỖI FLEXBOX CHO NAV */
-        
-        /* CSS DỮ LIỆU CŨ (Giữ nguyên) */
         section {
             padding: 20px;
         }
@@ -111,6 +61,38 @@
 
         td {
             text-align: center;
+        }
+
+        form.search_form {
+            float: right;
+            margin-top: 8px;
+            margin-right: 16px;
+        }
+
+        form.search_form label {
+            margin-right: 8px;
+            color: white;
+        }
+
+        form.search_form input[type="text"] {
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        form.search_form button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form.search_form button:hover {
+            background-color: #333;
         }
 
         .order-container {
@@ -208,28 +190,25 @@
 <body>
 
     <header>
-        <h1>Sách đã thuê</h1>
+        <h1>SÁCH ĐÃ THUÊ</h1>
     </header>
 
     <nav>
-        <div class="nav-links">
-            <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
-            <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
-            <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
-            <a href="{{ url_for('cart') }}">Giỏ hàng</a>
-            <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
-            <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
-            <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
-            <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
-        </div>
+        <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+        <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+        <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+        <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+        <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+        <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+        <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+        <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
 
-        <form action="{{ url_for('search_results') }}" method="post">
+        <form action="{{ url_for('search_results') }}" method="post" class = "search_form">
             <label for="search">Tìm kiếm:</label>
             <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
             <button type="submit">Tìm kiếm</button>
         </form>
     </nav>
-    
     <section>
         <h2>Các sách đã thuê: </h2>
         {% for order, order_items in orders.items() %}
@@ -280,6 +259,8 @@
         </div>
         {% endfor %}
     </section>
+
+
 
 </body>
 

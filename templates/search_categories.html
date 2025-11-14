@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Categories</title>
+    <title>Tìm thể loại</title>
     <style>
         body {
             font-family: 'Times New Roman', cursive;
@@ -122,34 +122,34 @@
 </head>
 <body>
     <header>
-        <h1>Vault Verse</h1>
+        <h1>Tìm thể loại</h1>
     </header>
 
     <nav>
-        <a href="{{ url_for('reader_dashboard') }}">Home</a>
-        <a href="{{ url_for('browse_books') }}">Browse Books</a>
-        <a href="{{ url_for('browse_categories') }}">Browse Categories</a>
-        <a href="{{ url_for('cart') }}">Cart</a>
-        <a href="{{ url_for('my_orders') }}">My Books</a>
-        <a href="{{ url_for('reader_feedback') }}">Feedback</a>
-        <a href="{{ url_for('user_profile') }}">Profile</a>
-        <a href="{{ url_for('reader_logout') }}">Logout</a>
-        
-        <form action="{{ url_for('search_results') }}" method="post">
-            <label for="search">Search:</label>
-            <input type="text" id="search" name="search" placeholder="Enter book name">
-            <button type="submit">Search</button>
-        </form>
-    </nav>
+    <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+    <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+    <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+    <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+    <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+    <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+    <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+    <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
+
+    <form action="{{ url_for('search_results') }}" method="post">
+        <label for="search">Tìm kiếm:</label>
+        <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
+        <button type="submit">Tìm kiếm</button>
+    </form>
+</nav>
 
     <section>
-        <h1>Search Results for "{{ search_query }}"</h1>
+        <h1>Tìm kiếm kết quả cho "{{ search_query }}"</h1>
         <br>
         <table bgcolor:"white">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th>Tên</th>
+                    <th>Mô tả</th>
                 </tr>
             </thead>
             <tbody>

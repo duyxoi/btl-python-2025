@@ -11,60 +11,136 @@
             padding: 0;
             background: url('static/images/7.jpg') center/cover no-repeat fixed;
         }
-        header { background-color: #333; padding: 20px; color: white; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        header h1 { margin: 0; font-size: 2em; text-transform: uppercase; }
-        nav { background-color: #4CAF50; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+            text-transform: uppercase;
+        }
+
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
         nav a {
-            float: left; display: block; color: white; text-align: center;
-            padding: 14px 16px; text-decoration: none; transition: background-color 0.3s;
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
             border-bottom: 2px solid transparent;
         }
-        nav a:hover { background-color: #333; color: #4CAF50; }
-        form { float: right; margin-top: 14px; margin-right: 16px; }
-        form label { margin-right: 8px; color: white; }
-        form input[type="text"] { padding: 8px; border: 1px solid #4CAF50; border-radius: 4px; outline: none; }
-        form button { padding: 8px 12px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
-        form button:hover { background-color: #333; }
-        section {
-            padding: 20px; background-color: rgba(255,255,255,0.9); box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-radius: 10px; margin: 20px; transition: box-shadow 0.3s; text-align: center;
+
+        nav a:hover {
+            background-color: #333;
+            color: #4CAF50;
         }
-        section:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        h1 { margin: 0; font-size: 2em; }
-        p { margin: 20px 0; font-size: 1.2em; }
-        .welcome-message { margin-top: 20px; font-family: 'Times New Roman', cursive; font-size: 1.5em; }
+
+        form {
+            float: right;
+            margin-top: 8px;
+            margin-right: 16px;
+        }
+
+        form label {
+            margin-right: 8px;
+            color: white;
+        }
+
+        form input[type="text"] {
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        form button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #333;
+        }
+
+        section {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 20px;
+            transition: box-shadow 0.3s;
+            text-align: center;
+        }
+
+        section:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        p {
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        .welcome-message {
+            margin-top: 20px;
+            font-family: 'Times New Roman', cursive;
+            font-size: 1.5em;
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Thế giới tri thức</h1>
-    </header>
+<header>
+    <h1>Thế giới tri thức</h1>
+</header>
 
-    <nav>
-        <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
-        <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
-        <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
-        <a href="{{ url_for('cart') }}">Giỏ hàng</a>
-        <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
-        <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
-        <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
-        <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
+<nav>
+    <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+    <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+    <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+    <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+    <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+    <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+    <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+    <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
 
-        <form action="{{ url_for('search_results') }}" method="post">
-            <label for="search">Tìm kiếm:</label>
-            <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
-            <button type="submit">Tìm kiếm</button>
-        </form>
-    </nav>
+    <form action="{{ url_for('search_results') }}" method="post">
+        <label for="search">Tìm kiếm:</label>
+        <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
+        <button type="submit">Tìm kiếm</button>
+    </form>
+</nav>
 
-    <section>
-        <div class="welcome-message">
-            <h2>Chào mừng bạn đã đến với thư viện sách của chúng tôi</h2>
-            <p>"Books are a uniquely portable magic." - Stephen King</p>
-        </div>
-    </section>
+<section>
+    <div class="welcome-message">
+        <h2>Chào mừng bạn đã đến với thư viện sách của chúng tôi</h2>
+        <p>"Books are a uniquely portable magic." - Stephen King</p>
+    </div>
+</section>
 
-    <!-- NHÚNG WIDGET CHAT NỔI -->
-    <script src="{{ url_for('static', filename='bookbot-widget.js') }}"></script>
+<!-- NHÚNG WIDGET CHAT NỔI -->
+<script src="{{ url_for('static', filename='bookbot-widget.js') }}"></script>
 </body>
 </html>

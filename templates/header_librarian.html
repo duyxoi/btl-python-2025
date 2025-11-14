@@ -1,0 +1,60 @@
+<!-- templates/_header.html -->
+<header>
+    <h1>{{ header_title }}</h1>
+</header>
+
+<nav>
+    <a href="{{ url_for('librarian_dashboard') }}"
+       class="{% if request.endpoint == 'librarian_dashboard' %}active{% endif %}">
+       Trang chủ
+    </a>
+    <a href="{{ url_for('books') }}"
+       class="{% if request.endpoint == 'books' %}active{% endif %}">
+       Các loại sách
+    </a>
+    <a href="{{ url_for('categories') }}"
+       class="{% if request.endpoint == 'categories' %}active{% endif %}">
+       Các thể loại
+    </a>
+    <a href="{{ url_for('active_readers') }}"
+       class="{% if request.endpoint == 'active_readers' %}active{% endif %}">
+       Hoạt động của người đọc
+    </a>
+    <a href="{{ url_for('feedbacks') }}"
+       class="{% if request.endpoint == 'feedbacks' %}active{% endif %}">
+       Đánh giá của người đọc
+    </a>
+    <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
+</nav>
+
+<style>
+    header {
+        background-color: #333;
+        padding: 20px;
+        color: white;
+        text-align: center;
+    }
+    nav {
+        background-color: #4CAF50;
+        overflow: hidden;
+    }
+    nav a {
+        float: left;
+        display: block;
+        color: white;
+        padding: 14px 16px;
+        text-decoration: none;
+        transition: background-color 0.3s;
+        border-bottom: 2px solid transparent;
+    }
+    nav a:hover {
+        background-color: #333;
+        color: #4CAF50;
+    }
+    nav a.active {
+        background-color: #333;
+        color: #4CAF50;
+        font-weight: bold;
+        border-bottom: 2px solid #4CAF50;
+    }
+</style>

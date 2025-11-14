@@ -20,7 +20,7 @@
             text-align: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        
+
         /* ĐỔI TIÊU ĐỀ */
         header h1 {
              margin: 0;
@@ -48,28 +48,28 @@
             background-color: #333;
             color: #4CAF50;
         }
-        
+
         /* [START] CSS CHO HERO BANNER MỚI (Phần Chào mừng) */
         .welcome-banner {
-            height: 200px; 
+            height: 200px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            
+
             /* Dùng ảnh nền riêng cho banner */
             background: url('static/images/1.jpg') center/cover no-repeat;
-            
-            color: white; 
-            position: relative; 
+
+            color: white;
+            position: relative;
             z-index: 1;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             border-radius: 10px;
             margin: 20px;
         }
-        
+
         .welcome-banner::before {
             content: "";
             position: absolute;
@@ -78,19 +78,19 @@
             right: 0;
             bottom: 0;
             /* LÀM MỜ ẢNH NỀN HƠN (Đã tăng từ 0.5 lên 0.6) */
-            background: rgba(0, 0, 0, 0.6); 
+            background: rgba(0, 0, 0, 0.6);
             z-index: 2;
         }
 
         .welcome-banner h2, .welcome-banner p {
             position: relative;
-            z-index: 3; 
+            z-index: 3;
             margin: 5px 0;
         }
 
         .welcome-banner h2 {
             font-size: 2.5em;
-            text-shadow: 2px 2px 4px #000000; 
+            text-shadow: 2px 2px 4px #000000;
         }
         /* [END] CSS CHO HERO BANNER */
 
@@ -114,7 +114,7 @@
             margin: 20px 0;
             font-size: 1.2em;
         }
-        
+
         /* CSS BÁO CÁO DOANH THU */
         .revenue-table {
             width: 100%;
@@ -125,7 +125,7 @@
 
         .revenue-table th {
             padding: 10px;
-            background-color: #4CAF50; 
+            background-color: #4CAF50;
             color: white;
             border: 1px solid #4CAF50;
         }
@@ -136,8 +136,8 @@
         }
 
         .total-revenue {
-            font-size: 1.8em; 
-            color: #27ae60; 
+            font-size: 1.8em;
+            color: #27ae60;
             font-weight: bold;
         }
 
@@ -189,7 +189,7 @@
             <label for="month_year_filter">Chọn Tháng Để Tra Cứu:</label>
             <select name="month_year_filter" id="month_year_filter">
                 {% for item in available_months %}
-                    <option value="{{ item.key }}" 
+                    <option value="{{ item.key }}"
                             {% if item.key == current_filter_key %}selected{% endif %}>
                         Tháng {{ item.month }}/{{ item.year }}
                     </option>
@@ -201,12 +201,12 @@
         </form>
 
         <h3>Doanh Thu Tháng {{ current_month }}/{{ current_year }}</h3>
-        <p><strong>TỔNG DOANH THU:</strong> 
+        <p><strong>TỔNG DOANH THU:</strong>
             <span class="total-revenue">
                 {{ "{:,.0f} VND".format(total_revenue) }}
             </span>
         </p>
-        
+
         <h4>Chi Tiết Sách Đã Bán Trong Tháng</h4>
         {% if revenue_details %}
         <table class="revenue-table">
@@ -236,7 +236,7 @@
         {% endif %}
 
         <hr style="margin-top: 30px;">
-        
+
         <h3>📖 Sách Đã Bán Gần Đây (5 Giao Dịch Gần Nhất)</h3>
         {% if recent_sales %}
         <table class="revenue-table">

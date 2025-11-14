@@ -11,7 +11,6 @@
             padding: 0;
             background: url('static/images/1.jpg') center/cover no-repeat fixed;
         }
-
         header {
             background-color: #333;
             padding: 20px;
@@ -96,6 +95,7 @@
         button:hover {
             background-color: #333;
         }
+
         select {
             width: 100%;
             padding: 10px;
@@ -105,6 +105,7 @@
             border-radius: 4px;
             font-size: 1em;
         }
+
         select {
             width: 100%;
             padding: 10px;
@@ -136,58 +137,51 @@
         option {
             background-color: #fff;
         }
-
-
         select:focus,
         select:active {
             outline: none;
             border-color: #333;
         }
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
     </style>
-    
+
 </head>
 <body>
+{% include "header_librarian.html" with context %}
+<section>
+    <h2>THÊM SÁCH</h2>
+    <form action="{{ url_for('add_book') }}" method="post">
 
-    <header>
-        <h1>Quản lý</h1>
-    </header>
-     <nav>
-        <a href="{{ url_for('librarian_dashboard') }}">Trang chủ</a>
-        <a href="{{ url_for('books') }}">Các loại sách</a>
-        <a href="{{ url_for('categories') }}">Các thể loại</a>
-        <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
-        <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
-        <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
-    </nav>
-    
-    <section>
-        <h2>THÊM SÁCH</h2>
-        <form action="{{ url_for('add_book') }}" method="post">
-            <label for="name">Tên sách:</label>
-            <input type="text" id="name" name="name" required>
+        <label for="name">Tên sách:</label>
+        <input type="text" id="name" name="name" required>
 
-            <label for="author">Tác giả:</label>
-            <input type="text" id="author" name="author" required>
+        <label for="author">Tác giả:</label>
+        <input type="text" id="author" name="author" required>
 
-            <label for="description">Mô tả:</label>
-            <input type="text" id="description" name="description">
+        <label for="description">Mô tả:</label>
+        <input type="text" id="description" name="description">
 
-            <label for="quantity">Số lượng:</label>
-            <input type="number" id="quantity" name="quantity" required>
+        <label for="quantity">Số lượng:</label>
+        <input type="number" id="quantity" name="quantity" required>
 
-            <label for="price">Giá:</label>
-            <input type="number" id="price" name="price" required>
+        <label for="price">Giá:</label>
+        <input type="number" id="price" name="price" placeholder="đồng" required >
+        <label for="image_url">URL hình ảnh sách:</label>
+        <input type="url" id="image_url" name="image_url"
+               placeholder="Dán link ảnh bìa sách (vd: https://...jpg)" required>
+        <label for="category_id">Thể loại:</label>
+        <select id="category_id" name="category_id" required>
+            {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+            {% endfor %}
+        </select>
 
-            <label for="category_id">Thể loại:</label>
-            <select id="category_id" name="category_id" required>
-                    {% for category in categories %}
-                        <option value="{{ category.id }}">{{ category.name }}</option>
-                    {% endfor %}
-            </select>
-
-            <button type="submit">Thêm sách</button>
-        </form>
-    </section>
+        <button type="submit">Thêm sách</button>
+    </form>
+</section>
 
 </body>
 </html>

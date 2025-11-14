@@ -97,6 +97,7 @@
             margin: 20px 0;
             font-size: 1.2em;
         }
+
         .category {
             margin-bottom: 20px;
             overflow: hidden;
@@ -139,45 +140,54 @@
         .center button:hover {
             background-color: white;
         }
+        section button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        section button:hover {
+            background-color: #333;
+        }
     </style>
 </head>
 
 <body>
 
-    <header>
-        <h1>Các thể loại</h1>
-    </header>
-    <nav>
-        <a href="{{ url_for('librarian_dashboard') }}">Trang chủ</a>
-        <a href="{{ url_for('books') }}">Các loại sách</a>
-        <a href="{{ url_for('categories') }}">Các thể loại</a>
-        <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
-        <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
-        <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
-    </nav>
+<header>
+    <h1>Các thể loại</h1>
+</header>
+<nav>
+    <a href="{{ url_for('librarian_dashboard') }}">Trang chủ</a>
+    <a href="{{ url_for('books') }}">Các loại sách</a>
+    <a href="{{ url_for('categories') }}">Các thể loại</a>
+    <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
+    <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
+    <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
+</nav>
 
-    <section>
-        <h2>Tất cả thể loại</h2>
-        {% for category in categories %}
-        <a style="color: black;" href="{{ url_for('category_books', category_id=category.id) }}">
-            <div class="category">
-                <div class="category-info">
-                    <h3>{{ category.name }}</h3>
-                    <p>{{ category.description }}</p>
-                </div>
+<section>
+    <button class="center"><a style="color: black;" href="{{ url_for('add_category') }}">Thêm thể loại</a></button>
+    <button class="center"><a style="color: black;" href="{{ url_for('delete_category') }}">Xóa thể loại</a></button>
+    <h2>Tất cả thể loại</h2>
+    {% for category in categories %}
+    <a style="color: black;" href="{{ url_for('category_books', category_id=category.id) }}">
+        <div class="category">
+            <div class="category-info">
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description }}</p>
             </div>
-        </a>
-        <button style="background-color: black;border-radius: 4px;margin-bottom: 10px;"><a style="color: white;" href="{{ url_for('edit_category', category_id=category.id) }}">Chỉnh sửa</a></button>
-        {% endfor %}
-
-        <div class="center">
-            <button class="center"><a style="color: black;" href="{{ url_for('add_category') }}">Thêm thể loại</a></button>
         </div>
-        <br>
-        <div class="center">
-            <button class="center"><a style="color: black;" href="{{ url_for('delete_category') }}">Xóa thể loại</a></button>
-        </div>
-    </section>
+    </a>
+    <button style="background-color: black;border-radius: 4px;margin-bottom: 10px;"><a style="color: white;"
+                                                                                       href="{{ url_for('edit_category', category_id=category.id) }}">Chỉnh
+        sửa</a></button>
+    {% endfor %}
+</section>
 
 </body>
 
