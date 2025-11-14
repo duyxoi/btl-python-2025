@@ -105,17 +105,21 @@ def books():
 def add_book():
     categories = Category.query.all()
     if request.method == 'POST':
+        # Lấy tất cả dữ liệu từ form
         name = request.form['name']
         author = request.form['author']
         description = request.form['description']
         quantity = int(request.form['quantity'])
         price = int(request.form['price'])
         category_id = int(request.form['category_id'])
+        image_url = request.form['image_url']
 
         new_book = Product(name=name, author=author, description=description,
                            quantity=quantity,
                            price=price,
-                           category_id=category_id)
+                           category_id=category_id,
+                           image_url=image_url)
+
         db.session.add(new_book)
         db.session.commit()
 
@@ -126,19 +130,24 @@ def add_book():
 
 @app.route('/edit_book/<int:id>', methods=['GET', 'POST'])
 def edit_book(id):
-    if request.method == 'GET':
-        book = Product.query.get(id)
-        return render_template('edit_book.html', book=book)
-    elif request.method == 'POST':
-        book = Product.query.get(id)
+    book = Product.query.get(id)
+    categories = Category.query.all()
+
+    if request.method == 'POST':
         book.name = request.form['name']
         book.author = request.form['author']
-        book.category = request.form['category']
         book.description = request.form['description']
-        book.quantity = request.form['quantity']
-        book.price = request.form['price']
+        book.quantity = int(request.form['quantity'])
+        book.price = int(request.form['price'])
+
+        book.image_url = request.form['image_url']
+
+        book.category_id = int(request.form['category_id'])
+
         db.session.commit()
         return redirect(url_for('books'))
+
+    return render_template('edit_book.html', book=book, categories=categories)
 
 
 @app.route('/delete_books', methods=['GET', 'POST'])
