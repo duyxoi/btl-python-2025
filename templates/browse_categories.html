@@ -44,7 +44,7 @@
 
         form {
             float: right;
-            margin-top: 14px;
+            margin-top: 8px;
             margin-right: 16px;
         }
 
@@ -81,7 +81,7 @@
             border-radius: 10px;
             margin: 20px;
             transition: box-shadow 0.3s;
-            text-align: center; 
+            text-align: center; /* Center aligning content */
         }
 
         section:hover {
@@ -98,44 +98,43 @@
             font-size: 1.2em;
         }
 
-        /* SỬA ĐỔI CSS BẢNG */
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            background-color: white; /* Thêm nền trắng để dữ liệu nổi bật */
+        }
+
+        tr {
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        /* MỚI: Thêm hiệu ứng hover cho các hàng trong thân bảng (tbody) */
+        /* (Bỏ qua hàng tiêu đề 'th') */
+        tbody tr:hover {
+            background-color: #f5f5f5; /* Đổi màu nền khi di chuột */
         }
 
         th, td {
-            padding: 10px;
-            border: 1px solid #ddd; /* Dùng border 1px solid #ddd cho tất cả */
+            /* THAY ĐỔI: Tăng padding để thoáng hơn */
+            padding: 14px 10px;
+            border-bottom: 1px solid #ddd;
+            /* MỚI: Căn giữa theo chiều dọc (đẹp hơn khi nội dung dài ngắn khác nhau) */
+            vertical-align: middle;
         }
 
         th {
             background-color: #4CAF50;
             color: white;
-            text-align: center; /* Căn giữa tiêu đề */
         }
 
-        /* CÂN BẰNG CHIỀU RỘNG CÁC CỘT (Sử dụng nth-child để chỉ định vị trí) */
-        /* Cột 1: Tên */
-        th:nth-child(1), td:nth-child(1) {
-            width: 20%; 
-            text-align: left; /* Căn trái tên thể loại */
+        td {
+            text-align: center; /* THAY ĐỔI: Giữ làm mặc định (cho cột 3) */
         }
-
-        /* Cột 2: Mô tả */
-        th:nth-child(2), td:nth-child(2) {
-            width: 60%; 
-            text-align: left; /* Căn trái mô tả */
+        td:nth-child(1),
+        td:nth-child(2) {
+            text-align: left;
+            padding-left: 20px; /* Thêm chút lề trái cho đẹp */
         }
-
-        /* Cột 3: Hành động */
-        th:nth-child(3), td:nth-child(3) {
-            width: 20%; 
-            text-align: center; /* Căn giữa nút Hành động */
-        }
-
         .view-books-button {
             background-color: #4CAF50;
             color: white;
@@ -144,8 +143,6 @@
             padding: 8px 12px;
             cursor: pointer;
             transition: background-color 0.3s;
-            text-decoration: none; /* Bỏ gạch chân */
-            display: inline-block;
         }
 
         .view-books-button:hover {
@@ -156,7 +153,7 @@
 <body>
 
     <header>
-        <h1>Khám phá thể loại</h1>
+        <h1>KHÁM PHÁ THỂ LOẠI</h1>
     </header>
 
     <nav>
@@ -178,26 +175,18 @@
     
     <section>
         <table>
-            <thead>
-                <tr>
-                    <th>Tên</th>
-                    <th>Mô tả</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for category in categories %}
-                <tr>
-                    <td>{{ category.name }}</td>
-                    <td>{{ category.description }}</td>
-                    <td style="text-align: center;">
-                        <a href="{{ url_for('view_category_books', category_id=category.id) }}" class="view-books-button">
-                            Xem sách
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+            <tr>
+                <th>Tên</th>
+                <th>Mô tả</th>
+                <th>Hành động</th>
+            </tr>
+            {% for category in categories %}
+            <tr>
+                <td>{{ category.name }}</td>
+                <td>{{ category.description }}</td>
+                <td><a href="{{ url_for('view_category_books', category_id=category.id) }}" class="view-books-button">Xem sách</a></td>
+            </tr>
+            {% endfor %}
         </table>
     </section>
 

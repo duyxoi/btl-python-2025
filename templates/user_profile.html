@@ -48,25 +48,25 @@
             color: #4CAF50;
         }
 
-        form {
+        form.search_form {
             float: right;
-            margin-top: 14px;
+            margin-top: 8px;
             margin-right: 16px;
         }
 
-        form label {
+        form.search_form label {
             margin-right: 8px;
             color: white;
         }
 
-        form input[type="text"] {
+        form.search_form input[type="text"] {
             padding: 8px;
             border: 1px solid #4CAF50;
             border-radius: 4px;
             outline: none;
         }
 
-        form button {
+        form.search_form button {
             padding: 8px 12px;
             background-color: #4CAF50;
             color: white;
@@ -76,7 +76,7 @@
             transition: background-color 0.3s;
         }
 
-        form button:hover {
+        form.search_form button:hover {
             background-color: #333;
         }
 
@@ -134,7 +134,7 @@
         <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
         <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
 
-        <form action="{{ url_for('search_results') }}" method="post">
+        <form action="{{ url_for('search_results') }}" method="post" class="search_form">
             <label for="search">Tìm kiếm:</label>
             <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
             <button type="submit">Tìm kiếm</button>

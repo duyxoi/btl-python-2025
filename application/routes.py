@@ -4,7 +4,7 @@ import shutil
 import time
 from datetime import datetime, timedelta
 
-from flask import (flash, redirect, render_template, request, send_file,
+from flask import (abort, flash, redirect, render_template, request, send_file,
                    send_from_directory, session, url_for)
 
 from application import app, db
@@ -17,6 +17,7 @@ from flask_login import current_user
 def welcome():
     return render_template('intro.html')
 
+
 @app.route('/librarian_login', methods=['GET', 'POST'])
 def librarian_login():
     if request.method == 'POST':
@@ -26,7 +27,7 @@ def librarian_login():
         user = User.query.filter_by(email=email, role='librarian').first()
 
         if user and user.password == password:
-            session.clear()   # rất quan trọng!
+            session.clear()  # rất quan trọng!
 
             session['user'] = {
                 'id': user.id,
@@ -40,11 +41,10 @@ def librarian_login():
             return redirect(url_for('librarian_dashboard'))
 
         else:
-            flash('Invalid email or password. Please try again.', 'error')
+            flash('Tên đăng nhập hoặc mật khẩu sai. Vui lòng nhập lại!', 'error')
             return render_template('librarian_login.html')
 
     return render_template('librarian_login.html')
-
 
 
 @app.route('/reader_login', methods=['GET', 'POST'])
@@ -52,30 +52,23 @@ def reader_login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-
         user = User.query.filter_by(email=email, password=password).first()
-
         if user:
-            session.clear()   # XÓA session cũ
-
+            session.clear()
             session['reader'] = {
                 'id': user.id,
                 'email': user.email,
                 'role': user.role
             }
-            session['email'] = user.email  # 👈 thêm dòng này
-
+            session['email'] = user.email
             print(">>> LOGIN READER =", session)
-
-            flash('Logged in successfully!', 'success')
+            flash('Đăng nhập thành công!', 'success')
             return redirect(url_for('reader_dashboard'))
         else:
-            flash('Invalid email or password. Please try again.', 'error')
-            return render_template('librarian_login.html')
+            flash('Tên đăng nhập hoặc mật khẩu sai. Vui lòng nhập lại!', 'error')
+            return render_template('reader_login.html')
 
     return render_template('reader_login.html')
-
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -88,8 +81,7 @@ def registration_form():
         address = request.form['address']
         role = request.form['role']
 
-
-        new_user = User(name=name, phone=phone, email=email, password=password, address=address,role=role)
+        new_user = User(name=name, phone=phone, email=email, password=password, address=address, role=role)
         db.session.add(new_user)
         db.session.commit()
 
@@ -102,12 +94,12 @@ def registration_success():
     return render_template('registration_success.html')
 
 
-
 @app.route('/books')
 def books():
     books = Product.query.all()
     categories = Category.query.all()
     return render_template('books.html', books=books)
+
 
 @app.route('/add_book', methods=['GET', 'POST'])
 def add_book():
@@ -121,15 +113,16 @@ def add_book():
         category_id = int(request.form['category_id'])
 
         new_book = Product(name=name, author=author, description=description,
-        quantity=quantity,
-        price=price,
-        category_id=category_id)
+                           quantity=quantity,
+                           price=price,
+                           category_id=category_id)
         db.session.add(new_book)
         db.session.commit()
 
         return redirect(url_for('books'))
 
-    return render_template('add_book.html',categories=categories)
+    return render_template('add_book.html', categories=categories)
+
 
 @app.route('/edit_book/<int:id>', methods=['GET', 'POST'])
 def edit_book(id):
@@ -146,6 +139,7 @@ def edit_book(id):
         book.price = request.form['price']
         db.session.commit()
         return redirect(url_for('books'))
+
 
 @app.route('/delete_books', methods=['GET', 'POST'])
 def delete_books():
@@ -164,7 +158,7 @@ def add_category():
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
-        
+
         new_category = Category(name=name, description=description)
         try:
             db.session.add(new_category)
@@ -174,6 +168,7 @@ def add_category():
             print(f"Error adding category: {e}")
             db.session.rollback()
     return render_template('add_category.html')
+
 
 @app.route('/delete_category', methods=['GET', 'POST'])
 def delete_category():
@@ -186,6 +181,7 @@ def delete_category():
 
     categories = Category.query.all()
     return render_template('delete_category.html', categories=categories)
+
 
 @app.route('/categories')
 def categories():
@@ -201,6 +197,7 @@ def categories():
         categories_data.append(category_data)
 
     return render_template('categories.html', categories=categories_data)
+
 
 def get_category_books(category_id):
     category = Category.query.get(category_id)
@@ -218,16 +215,17 @@ def category_books(category_id):
     else:
         return "Category or books not found."
 
+
 @app.route('/edit_category/<int:category_id>', methods=['GET', 'POST'])
 def edit_category(category_id):
     category = Category.query.get_or_404(category_id)
-    
+
     if request.method == 'POST':
         category.name = request.form['name']
         category.description = request.form['description']
         db.session.commit()
         return redirect(url_for('categories'))
-    
+
     return render_template('edit_category.html', category=category)
 
 
@@ -240,11 +238,12 @@ def feedbacks():
         feedback_data.append({
             'phone': user.phone,
             'username': user.name,
-            'feedback_text': feedback.feedback_text 
+            'feedback_text': feedback.feedback_text
         })
 
-    print("Feedback Data:", feedback_data) 
+    print("Feedback Data:", feedback_data)
     return render_template('feedbacks.html', feedbacks=feedback_data)
+
 
 @app.route('/active_readers', methods=['GET'])
 def active_readers():
@@ -275,13 +274,14 @@ def handle_order_status():
 
             db.session.commit()
 
-    return redirect(url_for('active_readers')) 
+    return redirect(url_for('active_readers'))
+
 
 @app.route('/librarian_logout')
 def librarian_logout():
-    session.pop('user', None)   # xoá session librarian
+    session.pop('user', None)  # xoá session librarian
     return redirect(url_for('librarian_login'))
-
+    # return render_template('librarian_logout.html')
 
 @app.route('/reader_dashboard')
 def reader_dashboard():
@@ -292,25 +292,30 @@ def reader_dashboard():
 
     return redirect(url_for('reader_login'))
 
+
 @app.route('/browse_books')
 def browse_books():
     books = Product.query.all()
     return render_template('browse_books.html', books=books)
+
 
 @app.route('/browse_categories')
 def browse_categories():
     categories = Category.query.all()
     return render_template('browse_categories.html', categories=categories)
 
+
 @app.route('/view_category_books/<int:category_id>')
 def view_category_books(category_id):
     category_books = Product.query.filter_by(category_id=category_id).all()
     return render_template('view_categories.html', books=category_books)
 
+
 @app.route('/reader_logout')
 def reader_logout():
-    session.pop('email', None)   # xoá session reader
+    session.pop('email', None)  # xoá session reader
     return redirect(url_for('reader_login'))
+    # return render_template('reader_logout.html')
 
 @app.route('/search_results', methods=['POST'])
 def search_results():
@@ -326,6 +331,7 @@ def search_results():
     else:
         return redirect(url_for('reader_dashboard'))
 
+
 @app.route('/search_categories', methods=['POST'])
 def search_categories():
     if request.method == 'POST':
@@ -334,7 +340,8 @@ def search_categories():
         return render_template('search_categories.html', categories=categories, search_query=search_query)
     else:
         return redirect(url_for('reader_dashboard'))
-    
+
+
 @app.route('/user_profile')
 def user_profile():
     if 'email' in session:
@@ -344,35 +351,35 @@ def user_profile():
             return render_template('user_profile.html', user=user)
     return 'User profile not found or user not logged in'
 
+
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     if request.method == 'POST':
         book_id = int(request.form['book_id'])
         quantity = int(request.form['quantity'])
-        
+
         if 'email' in session:
             email = session['email']
             user = User.query.filter_by(email=email).first()
             if user:
                 book = Product.query.get(book_id)
-                
+
                 if book:
                     existing_cart_item = Cart.query.filter_by(user_id=user.id, product_id=book_id).first()
                     if existing_cart_item:
-                        if existing_cart_item.quantity + quantity > 5 :
-  
+                        if existing_cart_item.quantity + quantity > 5:
                             flash("Quá giới hạn đặt sách (tối đa 5 cuốn/mục hàng)!", "warning")
                             return redirect(url_for('browse_books'))
 
-                        if existing_cart_item.quantity + quantity > book.quantity :
+                        if existing_cart_item.quantity + quantity > book.quantity:
                             flash("Số lượng không đủ trong kho!", "warning")
                             return redirect(url_for('browse_books'))
-                            
+
                         existing_cart_item.quantity += quantity
                         flash(f"Đã thêm {quantity} cuốn {book.name} vào giỏ hàng!", "success")
-                        
+
                     else:
-                        if quantity > book.quantity :
+                        if quantity > book.quantity:
                             flash("Số lượng không đủ trong kho!", "warning")
                             return redirect(url_for('browse_books'))
 
@@ -381,10 +388,12 @@ def add_to_cart():
                         flash(f"Đã thêm {quantity} cuốn {book.name} vào giỏ hàng!", "success")
 
                     db.session.commit()
- 
+
                     return redirect(url_for('browse_books'))
-        
+
         return redirect(url_for('reader_login'))
+
+
 @app.route('/cart')
 def cart():
     if 'email' in session:
@@ -397,6 +406,7 @@ def cart():
 
     return render_template('cart.html', cart_items=[], total_amount=0)
 
+
 @app.route('/clear_cart', methods=['POST'])
 def clear_cart():
     if 'email' in session:
@@ -407,25 +417,27 @@ def clear_cart():
             db.session.commit()
     return redirect(url_for('cart'))
 
+
 def generate_order_id():
-    current_time = int(time.time() * 10) 
+    current_time = int(time.time() * 10)
     random_number = random.randint(100, 999)
     order_id = str(current_time) + str(random_number)
-    
+
     return order_id
+
 
 def my_orders():
     orders = {}
-    a={}
-    b={}
+    a = {}
+    b = {}
     if 'email' in session:
         email = session['email']
         user = User.query.filter_by(email=email).first()
-        if user:  
+        if user:
             user_orders = Order.query.filter_by(user_id=user.id).all()
             for order in user_orders:
                 order_items = []
-                product_ids = order.product_ids.split(',') 
+                product_ids = order.product_ids.split(',')
                 quantities = order.quantities.split(',')
                 prices = order.prices.split(',')
                 for product_id, quantity, price in zip(product_ids, quantities, prices):
@@ -444,7 +456,8 @@ def my_orders():
             return a
     else:
         return b
-    
+
+
 @app.route('/orders', methods=['POST'])
 def orders():
     orders = {}
@@ -495,8 +508,8 @@ def orders():
                 for product_id_str, quantity, price in zip(p_ids, qties, prs):
                     try:
                         product_id_int = int(product_id_str)
-                        product = Product.query.get(product_id_int) 
-                        
+                        product = Product.query.get(product_id_int)
+
                         if product:
                             order_items.append({
                                 'product': product,
@@ -505,7 +518,6 @@ def orders():
                             })
                     except ValueError:
                         continue
-
 
                 orders[new_order] = order_items
 
@@ -517,7 +529,8 @@ def orders():
             return redirect(url_for('reader_login'))
     else:
         return redirect(url_for('reader_login'))
-        
+
+
 @app.route('/reader_feedback', methods=['GET', 'POST'])
 def reader_feedback():
     if request.method == 'POST':
@@ -535,11 +548,10 @@ def reader_feedback():
         return redirect(url_for('reader_login'))
     else:
         if 'email' in session:
-            return render_template('reader_feedback.html')  
+            return render_template('reader_feedback.html')
         else:
             flash('You need to be logged in to submit feedback.', 'error')
             return redirect(url_for('reader_login'))
-
 
 
 @app.route('/my_orders', methods=['GET'])
@@ -564,12 +576,13 @@ def my_orders():
                                 'quantity': int(quantity),
                                 'total_price': int(price) * int(quantity)
                             })
-                    
+
                     orders[order] = order_items
 
             return render_template('my_orders.html', orders=orders, user_orders=user_orders)
-    
+
     return redirect(url_for('reader_login'))
+
 
 @app.route('/return_order', methods=['POST'])
 def return_order():
@@ -581,14 +594,15 @@ def return_order():
         if order:
             order.status = 'Returned'
             for product_id, quantity in zip(product_ids, order.quantities.split(',')):
-                    product = Product.query.get(product_id)
-                    if product:
-                        product.quantity += int(quantity)
+                product = Product.query.get(product_id)
+                if product:
+                    product.quantity += int(quantity)
             order.return_date = datetime.now().strftime('%Y-%m-%d')
 
             db.session.commit()
 
     return redirect(url_for('my_orders'))
+
 
 @app.route('/delete_order', methods=['POST'])
 def delete_order():
@@ -600,9 +614,9 @@ def delete_order():
             db.session.commit()
     return redirect(url_for('my_orders'))
 
+
 @app.route("/product/<int:product_id>")
 def detail_product(product_id):
-
     user_id = None
     role = None
 
@@ -626,8 +640,7 @@ def detail_product(product_id):
     product = Product.query.get_or_404(product_id)
     comments = Comment.query.filter_by(product_id=product_id).order_by(Comment.create_at.desc()).all()
 
-
-    print("role ",role)
+    print("role ", role)
     return render_template("detail_product.html",
                            product=product,
                            comments=comments,
@@ -639,16 +652,17 @@ from flask import request, redirect, url_for, flash
 from application.models import Comment
 from application.database import db
 
+
 @app.route("/product/<int:product_id>/comment", methods=["POST"])
 def add_comment(product_id):
     content = request.form.get("comment")
 
     user_id = None
 
-    if 'user' in session:          # admin
+    if 'user' in session:  # admin
         user_id = session['user']['id']
 
-    elif 'reader' in session:      # customer
+    elif 'reader' in session:  # customer
         user_id = session['reader']['id']
 
     print(">>> COMMENT USER ID =", user_id)
@@ -668,6 +682,22 @@ def add_comment(product_id):
     flash("Đã thêm bình luận!", "success")
     return redirect(url_for("detail_product", product_id=product_id))
 
+
+@app.route('/delete_comment/<int:comment_id>', methods=['POST'])
+def delete_comment(comment_id):
+    if 'user' not in session or session['user']['role'] != 'librarian':
+        abort(403)
+    comment_to_delete = Comment.query.get_or_404(comment_id)
+    product_id = comment_to_delete.product_id
+    try:
+        db.session.delete(comment_to_delete)
+        db.session.commit()
+        flash('Đã xóa bình luận thành công.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Xóa bình luận thất bại: {str(e)}', 'error')
+    return redirect(url_for('detail_product', product_id=product_id))
+
 def parse_order_items(order):
     items = []
     if not order.product_ids or not order.quantities or not order.prices:
@@ -676,13 +706,13 @@ def parse_order_items(order):
     product_ids = order.product_ids.split(',')
     quantities = order.quantities.split(',')
     prices = order.prices.split(',')
-    
+
     for product_id_str, quantity_str, price_str in zip(product_ids, quantities, prices):
         try:
             product_id = int(product_id_str)
             quantity = int(quantity_str)
             price = int(price_str)
-            
+
             book = Product.query.get(product_id)
             book_name = book.name if book else f"Sách ID {product_id}"
 
@@ -697,9 +727,10 @@ def parse_order_items(order):
             continue
     return items
 
+
 def get_revenue_data(month_filter=None, year_filter=None):
     base_query = Order.query.filter_by(status='Accepted')
-    
+
     current_date = datetime.now()
     if not month_filter:
         month_filter = current_date.month
@@ -709,21 +740,21 @@ def get_revenue_data(month_filter=None, year_filter=None):
     filter_string = f"{year_filter:04d}-{month_filter:02d}%"
     filtered_orders = base_query.filter(Order.issue_date.like(filter_string)).all()
     total_revenue = 0
-    book_revenue = {} 
-    
+    book_revenue = {}
+
     for order in filtered_orders:
         for item in parse_order_items(order):
             total_revenue += item['revenue']
-            
+
             book_id = item['product_id']
             if book_id not in book_revenue:
                 book_revenue[book_id] = {'name': item['name'], 'revenue': 0, 'quantity_sold': 0}
-            
+
             book_revenue[book_id]['revenue'] += item['revenue']
             book_revenue[book_id]['quantity_sold'] += item['quantity']
 
     recent_sales_orders = base_query.order_by(Order.issue_date.desc()).limit(5).all()
-                                     
+
     recent_sales = []
     for order in recent_sales_orders:
         for item in parse_order_items(order):
@@ -738,23 +769,22 @@ def get_revenue_data(month_filter=None, year_filter=None):
                 break
         if len(recent_sales) >= 5:
             break
-            
+
     all_dates_query = db.session.query(Order.issue_date).filter_by(status='Accepted').distinct().all()
-    
+
     available_months = set()
     for (date_str,) in all_dates_query:
         if date_str and len(date_str) >= 7:
             try:
-                dt = datetime.strptime(date_str[:7], '%Y-%m') 
+                dt = datetime.strptime(date_str[:7], '%Y-%m')
                 available_months.add(dt.strftime('%Y-%m'))
             except ValueError:
                 continue
-    
+
     available_months_list = sorted([
-        {'month': int(m.split('-')[1]), 'year': int(m.split('-')[0]), 'key': m} 
+        {'month': int(m.split('-')[1]), 'year': int(m.split('-')[0]), 'key': m}
         for m in available_months
     ], key=lambda x: (x['year'], x['month']), reverse=True)
-
 
     return {
         'total_revenue': total_revenue,
@@ -764,6 +794,7 @@ def get_revenue_data(month_filter=None, year_filter=None):
         'current_month': month_filter,
         'current_year': year_filter
     }
+
 
 @app.route('/librarian_dashboard', methods=['GET', 'POST'])
 def librarian_dashboard():
@@ -775,17 +806,18 @@ def librarian_dashboard():
     year_filter = None
 
     if request.method == 'POST':
-        selected_month_year = request.form.get('month_year_filter') 
+        selected_month_year = request.form.get('month_year_filter')
         if selected_month_year:
             try:
                 year_filter, month_filter = map(int, selected_month_year.split('-'))
             except ValueError:
-                pass 
-    
+                pass
+
     revenue_data = get_revenue_data(month_filter, year_filter)
-    
+
     revenue_data['current_filter_key'] = f"{revenue_data['current_year']:04d}-{revenue_data['current_month']:02d}"
 
     return render_template('librarian_dashboard.html', **revenue_data)
+
 if __name__ == '__main__':
     app.run(debug=True)

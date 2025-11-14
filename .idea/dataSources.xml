@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:sqlite:C:\Users\Admin\Downloads\Library_Management_System-main\Library_Management_System-main\instance\database.sqlite3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="database [2]" uuid="97295022-59cd-4187-85c6-524faad6d2c0">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Admin\Downloads\library_\BTL-Python\instance\database.sqlite3</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

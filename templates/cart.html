@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giỏ hàng</title>
     <style>
-        /* CSS CƠ SỞ */
         body {
             font-family: 'Times New Roman', cursive;
             margin: 0;
@@ -20,62 +19,43 @@
             text-align: center;
         }
 
-        h1 {
-            margin: 0;
-            font-size: 2em;
-        }
-        
-        /* [START] SỬA LỖI FLEXBOX CHO NAV */
         nav {
             background-color: #4CAF50;
             overflow: hidden;
-            display: flex; /* Kích hoạt Flexbox */
-            justify-content: space-between; /* Đẩy hai nhóm (links và form) ra hai bên */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            padding: 0 16px; 
-        }
-
-        .nav-links {
-            display: flex; /* Nhóm các liên kết lại */
-            align-items: center;
         }
 
         nav a {
-            display: block;
+            float: left;
             color: white;
             text-align: center;
-            padding: 14px 0; /* Chỉ padding dọc */
-            margin-right: 16px; /* Khoảng cách giữa các liên kết */
+            padding: 14px 16px;
             text-decoration: none;
-            transition: background-color 0.3s;
-            border-bottom: 2px solid transparent;
         }
 
         nav a:hover {
             background-color: #333;
         }
 
-        form {
-            margin: 0;
-            padding: 14px 0; /* Padding khớp với nav a */
-            display: flex;
-            align-items: center;
+
+        form.search_form {
+            float: right;
+            margin-top: 8px;
+            margin-right: 16px;
         }
 
-        form label {
+        form.search_form label {
             margin-right: 8px;
             color: white;
         }
 
-        form input[type="text"] {
+        form.search_form input[type="text"] {
             padding: 8px;
             border: 1px solid #4CAF50;
             border-radius: 4px;
             outline: none;
-            width: 150px;
         }
 
-        form button {
+        form.search_form button {
             padding: 8px 12px;
             background-color: #4CAF50;
             color: white;
@@ -83,13 +63,11 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin-left: 5px;
         }
 
-        form button:hover {
+        form.search_form button:hover {
             background-color: #333;
         }
-        /* [END] SỬA LỖI FLEXBOX CHO NAV */
 
         section {
             padding: 20px;
@@ -113,7 +91,7 @@
         }
 
         td {
-            text-align: center; 
+            text-align: center;
         }
 
         .total {
@@ -128,67 +106,83 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
-            margin-top: 20px; 
-            display: block; 
-            margin-left: auto; 
-            margin-right: auto; 
+            margin-top: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .button:hover {
             background-color: #333;
         }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .book-cover {
+            width: 80px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            display: block;
+            margin: 5px auto;
+        }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Giỏ hàng</h1>
-    </header>
+<header>
+    <h1>GIỎ HÀNG</h1>
+</header>
 
-    <nav>
-        <div class="nav-links">
-            <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
-            <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
-            <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
-            <a href="{{ url_for('cart') }}">Giỏ hàng</a>
-            <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
-            <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
-            <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
-            <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
-        </div>
-        
-        <form action="{{ url_for('search_results') }}" method="post">
-            <label for="search">Tìm kiếm:</label>
-            <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
-            <button type="submit">Tìm kiếm</button>
-        </form>
-    </nav>
-    
-    <section>
-        <table bgcolor="white">
+<nav>
+    <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+    <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+    <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+    <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+    <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+    <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+    <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+    <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
+
+    <form action="{{ url_for('search_results') }}" method="post" class = "search_form">
+        <label for="search">Tìm kiếm:</label>
+        <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
+        <button type="submit">Tìm kiếm</button>
+    </form>
+</nav>
+<section>
+    <table bgcolor="white">
+        <tr>
+            <th>Hình ảnh</th>
+            <th>Tên sách</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+        </tr>
+        {% for item in cart_items %}
             <tr>
-                <th>Tên sách</th>
-                <th>Số lượng</th>
-                <th>Giá</th>
-            </tr>
-            {% for item in cart_items %}
-            <tr>
+                <td style="width:100px;">
+                    <img src="{{ item.product.image_url or url_for('static', filename='covers/placeholder.jpg') }}"
+                         alt="{{ item.product.name }}" class="book-cover">
+                </td>
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.quantity }}</td>
-                <td>{{ item.product.price }}</td>
+                <td>{{ "{:,.0f}".format(item.product.price) }} đ</td>
             </tr>
-            {% endfor %}
-            <tr class="total">
-                <td colspan="2" style="text-align: right; font-weight: bold;">Tổng giá phải trả:</td>
-                <td style="font-weight: bold;">{{ "{:,.0f} đ".format(total_amount) }}</td>
-            </tr>
-        </table>
-        <form action="{{ url_for('clear_cart') }}" method="post">
-            <button type="submit" class="button">Xóa giỏ hàng</button>
-        </form>
-        <form action="{{ url_for('orders') }}" method="post">
-            <button type="submit" class="button">Thuê sách</button>
-        </form>
-    </section>
+        {% endfor %}
+        <tr class="total">
+            <td colspan="2" style="text-align: right; font-weight: bold;">Tổng giá phải trả:</td>
+            <td style="font-weight: bold;">{{ "{:,.0f} đ".format(total_amount) }}</td>
+        </tr>
+    </table>
+    <form action="{{ url_for('clear_cart') }}" method="post">
+        <button type="submit" class="button">Xóa giỏ hàng</button>
+    </form>
+    <form action="{{ url_for('orders') }}" method="post">
+        <button type="submit" class="button">Thuê sách</button>
+    </form>
+</section>
 </body>
 </html>
