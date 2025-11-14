@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:bgcolor="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/8.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+            text-transform: uppercase;
+        }
+
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+            color: #4CAF50;
+        }
+
+        form {
+            float: right;
+            margin-top: 14px;
+            margin-right: 16px;
+        }
+
+        form label {
+            margin-right: 8px;
+            color: white;
+        }
+
+        form input[type="text"] {
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        form button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #333;
+        }
+
+        section {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 20px;
+            transition: box-shadow 0.3s;
+            text-align: center;
+            overflow-x: auto; /* Add horizontal scrollbar if needed */
+        }
+
+        section:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Vault Verse</h1>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('reader_dashboard') }}">Home</a>
+        <a href="{{ url_for('browse_books') }}">Browse Books</a>
+        <a href="{{ url_for('browse_categories') }}">Browse Categories</a>
+        <a href="{{ url_for('cart') }}">Cart</a>
+        <a href="{{ url_for('my_orders') }}">My Books</a>
+        <a href="{{ url_for('reader_feedback') }}">Feedback</a>
+        <a href="{{ url_for('user_profile') }}">Profile</a>
+        <a href="{{ url_for('reader_logout') }}">Logout</a>
+        
+        <form action="{{ url_for('search_results') }}" method="post">
+            <label for="search">Search:</label>
+            <input type="text" id="search" name="search" placeholder="Enter book name">
+            <button type="submit">Search</button>
+        </form>
+    </nav>
+
+    <section>
+        <h1>Search Results for "{{ search_query }}"</h1>
+        <br>
+        <table bgcolor:"white">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td>
+                <a href="{{ url_for('detail_product', product_id=book.id) }}"
+                   style="text-decoration: none; color: #333; font-weight: bold;">
+                    {{ book.name }}
+                </a>
+            </td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+</body>
+</html>

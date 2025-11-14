@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xóa sách</title>
+    <style>
+
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/1.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+            border-bottom-color: #4CAF50; /* Change border color on hover */
+        }
+
+        nav form {
+            float: right;
+            margin-top: 14px;
+            margin-right: 16px;
+        }
+
+        nav label {
+            color: white;
+            margin-right: 8px;
+        }
+
+        nav input[type="text"] {
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        nav button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        nav button:hover {
+            background-color: #333;
+        }
+
+        section {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 20px;
+            transition: box-shadow 0.3s;
+        }
+
+        section table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        section th, section td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        section th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        section td:last-child {
+            text-align: center;
+        }
+
+        section button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        section button:hover {
+            background-color: #333;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Quản lý thư viện</h1>
+</header>
+
+<nav>
+    <a href="{{ url_for('librarian_dashboard') }}">Trang chủ</a>
+    <a href="{{ url_for('books') }}">Các loại sách</a>
+    <a href="{{ url_for('categories') }}">Các thể loại</a>
+    <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
+    <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
+    <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
+</nav>
+<section>
+    <table>
+        <tr>
+            <th>ID sách</th>
+            <th>Tên sách</th>
+            <th>Hành động</th>
+        </tr>
+        {% for book in books %}
+        <tr>
+            <td>{{ book.id }}</td>
+            <td>{{ book.name }}</td>
+            <td>
+                <form action="{{ url_for('delete_books') }}" method="post">
+                    <input type="hidden" name="id" value="{{ book.id }}">
+                    <button type="submit">Xóa</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</section>
+
+</body>
+</html>

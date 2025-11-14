@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sách đã thuê</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/1.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* [START] SỬA LỖI FLEXBOX CHO NAV */
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            display: flex; /* Kích hoạt Flexbox */
+            justify-content: space-between; /* Đẩy links và form ra hai bên */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 0 16px;
+        }
+
+        .nav-links {
+            display: flex; /* Nhóm các liên kết lại */
+            align-items: center;
+        }
+
+        nav a {
+            display: block; /* Bỏ float */
+            color: white;
+            text-align: center;
+            padding: 14px 0; /* Chỉ padding dọc */
+            margin-right: 16px; /* Khoảng cách giữa các liên kết */
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+        }
+
+        form {
+            margin: 0;
+            padding: 14px 0; /* Padding khớp với nav a */
+            display: flex;
+            align-items: center;
+        }
+
+        form label {
+            margin-right: 8px;
+            color: white;
+        }
+
+        form input[type="text"] {
+            width: 150px; 
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        form button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 5px;
+        }
+
+        form button:hover {
+            background-color: #333;
+        }
+        /* [END] SỬA LỖI FLEXBOX CHO NAV */
+        
+        /* CSS DỮ LIỆU CŨ (Giữ nguyên) */
+        section {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        .order-container {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+        }
+
+        .status-pending {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            color: orange;
+        }
+
+        .status-accepted {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            color: green;
+        }
+
+        .status-rejected {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            padding: 15px;
+            padding-bottom: 50px;
+            color: red;
+        }
+
+        h2 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin-top: 0;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .return-button {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .return-button form {
+            display: inline-block;
+        }
+
+        .return-button button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .return-button button:hover {
+            background-color: #45a049;
+        }
+
+        .delete-button {
+            float: right;
+            margin-top: 10px;
+        }
+
+        .delete-button button {
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .delete-button form {
+            display: inline-block;
+        }
+
+        .delete-button button:hover {
+            background-color: #d32f2f;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Sách đã thuê</h1>
+    </header>
+
+    <nav>
+        <div class="nav-links">
+            <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+            <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+            <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+            <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+            <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+            <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+            <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+            <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
+        </div>
+
+        <form action="{{ url_for('search_results') }}" method="post">
+            <label for="search">Tìm kiếm:</label>
+            <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
+            <button type="submit">Tìm kiếm</button>
+        </form>
+    </nav>
+    
+    <section>
+        <h2>Các sách đã thuê: </h2>
+        {% for order, order_items in orders.items() %}
+        <div class="status-accepted">
+            <p><strong>ID thuê:</strong> {{ order.order_id }}</p>
+            {% for item in order_items %}
+            <div class="order-item">
+                <p><strong>Tên sách:</strong> {{ item.product.name }}</p>
+                <p><strong>Tác giả:</strong> {{ item.product.author }}</p>
+                <p><strong>Số lượng:</strong> {{ item.quantity }}</p>
+                <p><strong>Giá:</strong> {{ item.total_price }}</p>
+            </div>
+            {% endfor %}
+            {% if order.status == 'Accepted' %}
+            <p><strong>Trạng thái: </strong>Đã chấp nhận</p>
+            <p><strong>Ngày thuê:</strong> {{ order.issue_date }}</p>
+            <p><strong>Ngày trả:</strong> {{ order.return_date }}</p>
+
+            <div class="return-button">
+                <form action="/return_order" method="post">
+                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                    <button type="submit">Trả sách</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        {% for order in user_orders %}
+        <div>
+            {% if order.status == 'Pending' %}
+            <div class="status-pending">
+                <p><strong>ID thuê:</strong> {{ order.order_id }}</p>
+                <p><strong>Trạng thái: </strong>Đang chờ duyệt</p>
+            </div>
+            {% elif order.status == 'Rejected' %}
+            <div class="status-rejected">
+                <p><strong>ID thuê:</strong> {{ order.order_id }}</p>
+                <p><strong>Trạng thái: </strong>Từ chối</p>
+                <div class="delete-button">
+                    <form action="/delete_order" method="post">
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <button type="submit">Xóa</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </section>
+
+</body>
+
+</html>

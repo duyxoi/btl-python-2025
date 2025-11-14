@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng kí</title>
+    <style>
+        body {
+            font-family: "Times New Roman", sans-serif;
+            background-image: url('static/images/3.jpg');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+            max-width: 460px;
+        }
+
+        h2 {
+            font-size: 2em;
+            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .success-message {
+            text-align: center;
+            color: #4caf50;
+        }
+    </style>
+</head>
+
+<body>
+
+    <form action="{{ url_for('registration_form') }}" method="post" id="registrationForm">
+        <h2>Đăng kí</h2>
+
+        <label for="name"><strong>Họ và tên:</strong></label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="phone"><strong>Số điện thoại (Chỉ có 10 chữ số):</strong></label>
+        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" title="Vui lòng nhập 10 chữ số" required>
+
+        <label for="email"><strong>Email:</strong></label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password"><strong>Mật khẩu <br>(tối thiểu 8 kí tự với 1 kí tự in hoa):</strong></label>
+        <input type="password" id="password" name="password" pattern="^(?=.[!@#$%^&(),.?])\S{8,}$"
+            title="Tối thiểu 8 kí tự với 1 kí tự in hoa" required>
+
+        <label for="role"><strong>Vai trò:</strong></label>
+        <select id="role" name="role" required>
+            <option value="">Chọn vai trò</option>
+            <option value="customer">Người đọc</option>
+        </select>
+
+        <label for="address"><strong>Địa chỉ:</strong></label>
+        <textarea id="address" name="address" rows="4" required></textarea>
+
+        <button type="submit">Đăng kí</button>
+    </form>
+
+    <div class="success-message" id="successMessage" style="display:none;">
+        Đăng kí thành công!
+    </div>
+    <script>
+        document.getElementById("registrationForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            document.getElementById("registrationForm").submit();
+        });
+
+    </script>
+
+</body>
+
+</html>

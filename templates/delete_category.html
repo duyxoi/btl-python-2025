@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xóa thể loại</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/1.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+            color: #4CAF50;
+        }
+
+        section {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+            transition: box-shadow 0.3s;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 8px;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Xóa thể loại</h1>
+    </header>
+
+    <nav>
+    <a href="{{ url_for('librarian_dashboard') }}">Trang chủ</a>
+    <a href="{{ url_for('books') }}">Các loại sách</a>
+    <a href="{{ url_for('categories') }}">Các thể loại</a>
+    <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
+    <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
+    <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
+</nav>
+    
+    <section>
+        <h2>Xóa thể loại</h2>
+        <form action="{{ url_for('delete_category') }}" method="post">
+            <label for="category">Chọn thể loại cần xóa:</label>
+            <select id="category" name="category" required>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.name }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Xóa thể loại</button>
+        </form>
+    </section>
+
+</body>
+</html>

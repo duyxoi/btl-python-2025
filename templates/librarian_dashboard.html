@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Thư Viện</title>
+    <style>
+        /* CSS CỦA BẠN (Đã tối ưu cho Hero Banner và Báo cáo) */
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/1.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* ĐỔI TIÊU ĐỀ */
+        header h1 {
+             margin: 0;
+            font-size: 2em;
+        }
+
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+            color: #4CAF50;
+        }
+        
+        /* [START] CSS CHO HERO BANNER MỚI (Phần Chào mừng) */
+        .welcome-banner {
+            height: 200px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            
+            /* Dùng ảnh nền riêng cho banner */
+            background: url('static/images/1.jpg') center/cover no-repeat;
+            
+            color: white; 
+            position: relative; 
+            z-index: 1;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin: 20px;
+        }
+        
+        .welcome-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* LÀM MỜ ẢNH NỀN HƠN (Đã tăng từ 0.5 lên 0.6) */
+            background: rgba(0, 0, 0, 0.6); 
+            z-index: 2;
+        }
+
+        .welcome-banner h2, .welcome-banner p {
+            position: relative;
+            z-index: 3; 
+            margin: 5px 0;
+        }
+
+        .welcome-banner h2 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px #000000; 
+        }
+        /* [END] CSS CHO HERO BANNER */
+
+        /* CSS MỚI CHO CÁC SECTION DƯỚI */
+        section {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 20px;
+            transition: box-shadow 0.3s;
+        }
+
+        section:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Xóa h1 trong section vì nó không cần thiết */
+
+        p {
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+        
+        /* CSS BÁO CÁO DOANH THU */
+        .revenue-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .revenue-table th {
+            padding: 10px;
+            background-color: #4CAF50; 
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+
+        .revenue-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .total-revenue {
+            font-size: 1.8em; 
+            color: #27ae60; 
+            font-weight: bold;
+        }
+
+        .filter-form {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-form select, .filter-form button {
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: white;
+            font-family: 'Times New Roman', cursive;
+        }
+
+        .filter-form button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Quản Lý Thư Viện</h1>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('librarian_dashboard') }}">Trang chủ</a>
+        <a href="{{ url_for('books') }}">Các loại sách</a>
+        <a href="{{ url_for('categories') }}">Các thể loại</a>
+        <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
+        <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
+        <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
+    </nav>
+
+    <div class="welcome-banner">
+        <h2>WELCOME, LIBRARIAN!</h2>
+        <p>Chào mừng tới trang quản lý thư viện.</p>
+    </div>
+
+    <section>
+        <h2>📈 Báo Cáo Doanh Thu</h2>
+        <hr>
+
+        <form method="POST" class="filter-form" action="{{ url_for('librarian_dashboard') }}">
+            <label for="month_year_filter">Chọn Tháng Để Tra Cứu:</label>
+            <select name="month_year_filter" id="month_year_filter">
+                {% for item in available_months %}
+                    <option value="{{ item.key }}" 
+                            {% if item.key == current_filter_key %}selected{% endif %}>
+                        Tháng {{ item.month }}/{{ item.year }}
+                    </option>
+                {% else %}
+                    <option value="{{ current_filter_key }}" selected>Tháng {{ current_month }}/{{ current_year }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Xem Báo Cáo</button>
+        </form>
+
+        <h3>Doanh Thu Tháng {{ current_month }}/{{ current_year }}</h3>
+        <p><strong>TỔNG DOANH THU:</strong> 
+            <span class="total-revenue">
+                {{ "{:,.0f} VND".format(total_revenue) }}
+            </span>
+        </p>
+        
+        <h4>Chi Tiết Sách Đã Bán Trong Tháng</h4>
+        {% if revenue_details %}
+        <table class="revenue-table">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">STT</th>
+                    <th style="text-align: left;">Tên Sách</th>
+                    <th style="width: 15%;">Số Lượng Đã Bán</th>
+                    <th style="width: 25%;">Doanh Thu (VND)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detail in revenue_details %}
+                <tr>
+                    <td style="text-align: center;">{{ loop.index }}</td>
+                    <td style="text-align: left;">{{ detail.name }}</td>
+                    <td style="text-align: center;">{{ detail.quantity_sold }}</td>
+                    <td style="text-align: right; font-weight: bold;">
+                        {{ "{:,.0f}".format(detail.revenue) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Không có sách nào được bán trong tháng {{ current_month }}/{{ current_year }}.</p>
+        {% endif %}
+
+        <hr style="margin-top: 30px;">
+        
+        <h3>📖 Sách Đã Bán Gần Đây (5 Giao Dịch Gần Nhất)</h3>
+        {% if recent_sales %}
+        <table class="revenue-table">
+            <thead>
+                <tr>
+                    <th style="width: 5%;">STT</th>
+                    <th style="width: 15%;">Ngày Bán</th>
+                    <th style="text-align: left;">Tên Sách</th>
+                    <th style="width: 10%;">Số Lượng</th>
+                    <th style="width: 20%;">Doanh Thu (VND)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sale in recent_sales %}
+                <tr>
+                    <td style="text-align: center;">{{ loop.index }}</td>
+                    <td>{{ sale.date }}</td>
+                    <td style="text-align: left;">{{ sale.name }}</td>
+                    <td style="text-align: center;">{{ sale.quantity }}</td>
+                    <td style="text-align: right; font-weight: bold;">
+                        {{ "{:,.0f}".format(sale.revenue) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Chưa có sách nào được bán gần đây.</p>
+        {% endif %}
+    </section>
+
+</body>
+</html>

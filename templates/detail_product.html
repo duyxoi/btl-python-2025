@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết sách</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='reader_style.css') }}">
+    <style>
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('{{ url_for('static', filename='images/1.jpg') }}') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+            color: #4CAF50;
+        }
+
+        section {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 800px;
+            transition: box-shadow 0.3s;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            text-align: center;
+        }
+
+        .product-details img {
+            display: block;
+            margin: 0 auto 20px auto;
+            max-width: 250px;
+            border-radius: 10px;
+        }
+
+        .product-attr {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .product-detail {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.5;
+            font-size: 1.05em;
+            white-space: pre-wrap;
+        }
+
+        .toggle-comments-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-comments-btn:hover {
+            background-color: #333;
+        }
+
+        .comments {
+            margin-top: 20px;
+            display: none; /* ban đầu ẩn phần bình luận */
+        }
+
+        .comment {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .comment small {
+            color: gray;
+        }
+
+        form.comment-form {
+            margin-top: 20px;
+            display: none; /* form bình luận cũng ẩn theo */
+            flex-direction: column;
+        }
+
+        form.comment-form textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            resize: vertical;
+            font-family: 'Times New Roman';
+        }
+
+        form.comment-form button {
+            align-self: flex-end;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form.comment-form button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Chi tiết sách</h1>
+</header>
+
+{% if role == 'librarian' %}
+<nav>
+    <a href="{{ url_for('librarian_dashboard') }}">Trang chủ</a>
+    <a href="{{ url_for('books') }}">Các loại sách</a>
+    <a href="{{ url_for('categories') }}">Các thể loại</a>
+    <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
+    <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
+    <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
+</nav>
+
+{% else %}
+<nav>
+    <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+    <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+    <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+    <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+    <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+    <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+    <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+    <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
+
+    <form action="{{ url_for('search_results') }}" method="post">
+        <label for="search">Tìm kiếm:</label>
+        <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
+        <button type="submit">Tìm kiếm</button>
+    </form>
+</nav>
+
+{% endif %}
+
+<section>
+    <div class="product-details">
+        {% if product.image_url %}
+            <img src="{{ product.image_url }}" alt="{{ product.name }}">
+        {% endif %}
+
+        <div class="product-attr"><strong>Tên sách:</strong> {{ product.name }}</div>
+        <div class="product-attr"><strong>Tác giả:</strong> {{ product.author or "Không rõ" }}</div>
+        <div class="product-attr"><strong>Thể loại:</strong> {{ product.category or "Chưa phân loại" }}</div>
+        <div class="product-attr"><strong>Số lượng:</strong> {{ product.quantity }}</div>
+        <div class="product-attr"><strong>Giá:</strong> {{ product.price }} VNĐ</div>
+        <div class="product-attr"><strong>Mô tả ngắn:</strong> {{ product.description }}</div>
+
+        {% if product.detail %}
+        <div class="product-detail">
+            <strong>Chi tiết nội dung:</strong><br>
+            {{ product.detail }}
+        </div>
+        {% endif %}
+    </div>
+
+    <button class="toggle-comments-btn" onclick="toggleComments()">💬 Hiện/Ẩn bình luận</button>
+
+    <div class="comments" id="comments-section">
+        <h2>Bình luận ({{ comments|length }})</h2>
+        {% if comments %}
+            {% for c in comments %}
+                <div class="comment">
+                    <p>{{ c.comment }}</p>
+                    <small><i>Người dùng: {{ c.user.name }} • {{ c.create_at.strftime("%d/%m/%Y %H:%M") }}</i></small>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Chưa có bình luận nào.</p>
+        {% endif %}
+    </div>
+
+    <form method="POST" action="{{ url_for('add_comment', product_id=product.id) }}" class="comment-form" id="comment-form">
+        <textarea name="comment" rows="3" placeholder="Nhập bình luận của bạn..." required></textarea>
+        <button type="submit">Gửi bình luận</button>
+    </form>
+</section>
+
+<script>
+    function toggleComments() {
+        const comments = document.getElementById("comments-section");
+        const form = document.getElementById("comment-form");
+        const isHidden = comments.style.display === "none" || comments.style.display === "";
+        comments.style.display = isHidden ? "block" : "none";
+        form.style.display = isHidden ? "flex" : "none";
+    }
+</script>
+
+</body>
+</html>

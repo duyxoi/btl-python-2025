@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đơn thuê sách</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/1.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* [SỬA LỖI FLEXBOX CHO NAV] */
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 0 16px;
+        }
+
+        .nav-links {
+            display: flex; 
+            align-items: center;
+        }
+
+        nav a {
+            display: block; 
+            color: white;
+            text-align: center;
+            padding: 14px 0; 
+            margin-right: 16px; 
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+        }
+        
+        form {
+            margin: 0;
+            padding: 14px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        form label {
+            margin-right: 8px;
+            color: white;
+        }
+
+        form input[type="text"] {
+            width: 150px; 
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        form button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 5px;
+        }
+
+        form button:hover {
+            background-color: #333;
+        }
+        /* [KẾT THÚC SỬA NAV] */
+
+        section {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: center; 
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        h2 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px; /* Tăng padding để chữ hiển thị tốt hơn */
+        }
+        
+        /* CSS CHO BẢNG CON BÊN TRONG */
+        .inner-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .inner-table th, .inner-table td {
+            border: none; /* Bỏ viền giữa các ô của bảng con */
+            border-bottom: 1px solid #ddd;
+        }
+        
+        /* CSS cho hàng tổng cộng */
+        .total-row td {
+            border-top: 2px solid #4CAF50 !important;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Đơn thuê sách</h1>
+</header>
+
+<nav>
+    <div class="nav-links">
+        <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+        <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+        <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+        <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+        <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+        <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+        <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+        <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
+    </div>
+
+    <form action="{{ url_for('search_results') }}" method="post">
+        <label for="search">Tìm kiếm:</label>
+        <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
+        <button type="submit">Tìm kiếm</button>
+    </form>
+</nav>
+
+<section>
+    <center><h2>Đơn thuê của tôi</h2></center>
+    <table bgcolor="white">
+        <thead>
+            <tr>
+                <th style="width: 20%;">ID thuê</th>
+                <th style="width: 80%;">Thông tin đơn thuê</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order, items in orders.items() %}
+            <tr>
+                <td>ID thuê: {{ order.order_id }}</td> <td>
+                    <table class="inner-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 50%;">Tên sách</th>
+                                <th style="width: 20%;">Số lượng</th>
+                                <th style="width: 30%;">Tổng giá</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ "{:,.0f}".format(item.total_price) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="2" style="text-align: right;">TỔNG GIÁ PHẢI TRẢ:</td>
+                                <td>{{ "{:,.0f}".format(order.total_price) }} VND</td> 
+                            </tr>
+                        </tfoot>
+                    </table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+</body>
+</html>

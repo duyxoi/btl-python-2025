@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm sách</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/1.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+            color: #4CAF50;
+        }
+
+        section {
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center; /* Center the content */
+            transition: box-shadow 0.3s;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 8px;
+            text-align: left; /* Align label text to the left */
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            appearance: none;
+            background-color: #fff;
+            position: relative;
+            cursor: pointer;
+        }
+
+        select:after {
+            content: '\25BC';
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        select:hover,
+        select:focus {
+            border-color: #4CAF50;
+        }
+
+        option {
+            background-color: #fff;
+        }
+
+
+        select:focus,
+        select:active {
+            outline: none;
+            border-color: #333;
+        }
+    </style>
+    
+</head>
+<body>
+
+    <header>
+        <h1>Quản lý</h1>
+    </header>
+     <nav>
+        <a href="{{ url_for('librarian_dashboard') }}">Trang chủ</a>
+        <a href="{{ url_for('books') }}">Các loại sách</a>
+        <a href="{{ url_for('categories') }}">Các thể loại</a>
+        <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
+        <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
+        <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
+    </nav>
+    
+    <section>
+        <h2>THÊM SÁCH</h2>
+        <form action="{{ url_for('add_book') }}" method="post">
+            <label for="name">Tên sách:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="author">Tác giả:</label>
+            <input type="text" id="author" name="author" required>
+
+            <label for="description">Mô tả:</label>
+            <input type="text" id="description" name="description">
+
+            <label for="quantity">Số lượng:</label>
+            <input type="number" id="quantity" name="quantity" required>
+
+            <label for="price">Giá:</label>
+            <input type="number" id="price" name="price" required>
+
+            <label for="category_id">Thể loại:</label>
+            <select id="category_id" name="category_id" required>
+                    {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+            </select>
+
+            <button type="submit">Thêm sách</button>
+        </form>
+    </section>
+
+</body>
+</html>

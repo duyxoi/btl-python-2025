@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám phá sách</title>
+    <style>
+        /* CSS CƠ SỞ */
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/1.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        /* [SỬA LỖI FLEXBOX CHO NAV] */
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            display: flex; /* Dùng Flexbox */
+            justify-content: space-between; /* Đẩy các nhóm phần tử ra hai bên */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 0 16px; 
+        }
+        
+        .nav-links {
+            display: flex; /* Nhóm các liên kết lại với nhau */
+            align-items: center;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 0; /* Padding dọc */
+            margin-right: 16px; /* Khoảng cách giữa các liên kết */
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+        }
+
+        /* KHỐI CHỨA FORM TÌM KIẾM */
+        form {
+            margin: 0;
+            padding: 14px 0; /* Padding khớp với nav a */
+            display: flex;
+            align-items: center;
+        }
+
+        form label {
+            margin-right: 8px;
+            color: white;
+        }
+
+        form input[type="text"] {
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+            width: 150px;
+        }
+
+        form button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 5px;
+        }
+
+        form button:hover {
+            background-color: #333;
+        }
+        
+        /* CSS BẢNG (Đã sửa lỗi ảnh nền xuyên thấu) */
+        section {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: center;
+            background-color: white; 
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: white; 
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        /* [START] ĐỊNH NGHĨA CHIỀU RỘNG VÀ CĂN CHỈNH CỘT */
+        .col-image { width: 6%; padding: 5px; }
+        .col-left { text-align: left !important; }
+        .book-name-col { width: 18%; }
+        .book-author-col { width: 13%; }
+        .book-desc-col { width: 25%; }
+        .book-category-col { width: 10%; }
+        .col-right { text-align: right !important; width: 8%; }
+        .col-action { width: 15%; padding-right: 5px; text-align: right !important; }
+
+        .action-form {
+            display: flex; align-items: center; justify-content: flex-end; gap: 5px; margin: 0;
+        }
+        .action-form input[type="number"] {
+            width: 50px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 3px;
+        }
+        .action-form button {
+            padding: 5px 10px; background-color: #4CAF50; color: white; border: none; border-radius: 3px; cursor: pointer; transition: background-color 0.3s;
+        }
+        .action-form button:hover { background-color: #333; }
+        /* [END] ĐỊNH NGHĨA CHIỀU RỘNG VÀ CĂN CHỈNH CỘT */
+
+        /* [STYLE TOAST MESSAGE - Đảm bảo bạn thêm script Toast ở cuối file] */
+        .toast-message {
+            visibility: hidden; 
+            min-width: 300px; 
+            padding: 20px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            position: fixed;
+            top: 50%; 
+            left: 50%;
+            transform: translate(-50%, -50%); 
+            z-index: 100;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            -webkit-animation: fadein 0.2s, fadeout 0.2s 0.8s; 
+            animation: fadein 0.2s, fadeout 0.2s 0.8s;
+        }
+
+        .toast-message.show { visibility: visible; }
+
+        @-webkit-keyframes fadein { from {opacity: 0;} to {opacity: 1;} }
+        @keyframes fadein { from {opacity: 0;} to {opacity: 1;} }
+        @-webkit-keyframes fadeout { from {opacity: 1;} to {opacity: 0;} }
+        @keyframes fadeout { from {opacity: 1;} to {opacity: 0;} }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Khám phá sách</h1>
+    </header>
+
+    <nav>
+        <div class="nav-links">
+            <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+            <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+            <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+            <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+            <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+            <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+            <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+            <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
+        </div>
+
+        <form action="{{ url_for('search_results') }}" method="post">
+            <label for="search">Tìm kiếm:</label>
+            <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
+            <button type="submit">Tìm kiếm</button>
+        </form>
+    </nav>
+
+    <section>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th class="col-image">Hình ảnh</th>
+                    <th class="col-left book-name-col">Tên</th>
+                    <th class="col-left book-author-col">Tác giả</th>
+                    <th class="col-left book-desc-col">Mô tả</th>
+                    <th class="col-left book-category-col">Thể loại</th>
+                    <th class="col-right">Giá</th>
+                    <th class="col-action">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for book in books %}
+                <tr>
+                    <td class="col-image">
+                        {% if book.image_url %}
+                            <img src="{{ book.image_url }}" alt="{{ book.name }}" style="width: 100%; height: auto;">
+                        {% else %}
+                            {{ loop.index }}
+                        {% endif %}
+                    </td>
+                    <td class="col-left book-name-col">
+                        {{ loop.index }}. 
+                        <a href="{{ url_for('detail_product', product_id=book.id) }}" style="text-decoration: none; color: inherit;">
+                            {{ book.name }}
+                        </a>
+                    </td> 
+                    <td class="col-left book-author-col">{{ book.author }}</td>
+                    <td class="col-left book-desc-col">{{ book.description }}</td>
+                    <td class="col-left book-category-col">{{ book.category }}</td>
+                    <td class="col-right">{{ "{:,.0f}".format(book.price) }} đ</td>
+                    <td class="col-action">
+                        <form action="{{ url_for('add_to_cart') }}" method="post" class="action-form">
+                            <input type="number" name="quantity" value="1" min="1">
+                            <input type="hidden" name="book_id" value="{{ book.id }}">
+                            <button type="submit">Thêm vào giỏ hàng</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <div id="toast" class="toast-message"></div>
+
+    <script>
+    function showToast(message, category) {
+        var toast = document.getElementById("toast");
+        toast.innerHTML = message;
+        
+ 
+        if (category === 'success') {
+            toast.style.backgroundColor = '#4CAF50'; 
+        } else if (category === 'warning' || category === 'error') {
+            toast.style.backgroundColor = '#f44336'; 
+        } else {
+            toast.style.backgroundColor = '#333';
+        }
+        
+        toast.className = "toast-message show";
+        
+
+        setTimeout(function(){ 
+            toast.className = toast.className.replace("show", ""); 
+        }, 1000); 
+    }
+
+
+    window.onload = function() {
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    showToast("{{ message }}", "{{ category }}");
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng</title>
+    <style>
+        /* CSS CƠ SỞ */
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/1.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        
+        /* [START] SỬA LỖI FLEXBOX CHO NAV */
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            display: flex; /* Kích hoạt Flexbox */
+            justify-content: space-between; /* Đẩy hai nhóm (links và form) ra hai bên */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 0 16px; 
+        }
+
+        .nav-links {
+            display: flex; /* Nhóm các liên kết lại */
+            align-items: center;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 0; /* Chỉ padding dọc */
+            margin-right: 16px; /* Khoảng cách giữa các liên kết */
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+        }
+
+        form {
+            margin: 0;
+            padding: 14px 0; /* Padding khớp với nav a */
+            display: flex;
+            align-items: center;
+        }
+
+        form label {
+            margin-right: 8px;
+            color: white;
+        }
+
+        form input[type="text"] {
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+            width: 150px;
+        }
+
+        form button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 5px;
+        }
+
+        form button:hover {
+            background-color: #333;
+        }
+        /* [END] SỬA LỖI FLEXBOX CHO NAV */
+
+        section {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        td {
+            text-align: center; 
+        }
+
+        .total {
+            font-weight: bold;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px; 
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+
+        .button:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Giỏ hàng</h1>
+    </header>
+
+    <nav>
+        <div class="nav-links">
+            <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+            <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+            <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+            <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+            <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+            <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+            <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+            <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
+        </div>
+        
+        <form action="{{ url_for('search_results') }}" method="post">
+            <label for="search">Tìm kiếm:</label>
+            <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
+            <button type="submit">Tìm kiếm</button>
+        </form>
+    </nav>
+    
+    <section>
+        <table bgcolor="white">
+            <tr>
+                <th>Tên sách</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+            </tr>
+            {% for item in cart_items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.product.price }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total">
+                <td colspan="2" style="text-align: right; font-weight: bold;">Tổng giá phải trả:</td>
+                <td style="font-weight: bold;">{{ "{:,.0f} đ".format(total_amount) }}</td>
+            </tr>
+        </table>
+        <form action="{{ url_for('clear_cart') }}" method="post">
+            <button type="submit" class="button">Xóa giỏ hàng</button>
+        </form>
+        <form action="{{ url_for('orders') }}" method="post">
+            <button type="submit" class="button">Thuê sách</button>
+        </form>
+    </section>
+</body>
+</html>

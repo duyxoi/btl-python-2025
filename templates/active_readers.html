@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='reader_style.css') }}">
+    <title>Hoạt động của người đọc</title>
+</head>
+<body>
+
+    <header>
+        <h1>Hoạt động người đọc</h1>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('librarian_dashboard') }}">Trang chủ</a>
+        <a href="{{ url_for('books') }}">Các loại sách</a>
+        <a href="{{ url_for('categories') }}">Các thể loại</a>
+        <a href="{{ url_for('active_readers') }}">Hoạt động của người đọc</a>
+        <a href="{{ url_for('feedbacks') }}">Đánh giá của người đọc</a>
+        <a href="{{ url_for('librarian_logout') }}">Đăng xuất</a>
+    </nav>
+
+    <section>
+        <h2>Đơn hàng chờ duyệt</h2> {% for order in pending_orders %}
+        <div class="book-item">
+            <div class="book-info">
+                 <p>Người đọc: {{ order.user_id }}</p>
+                <p class="book-title">{{ order.product_ids }}</p>
+                <p>Số lượng: {{ order.quantity }}</p>
+                <p>Tổng giá: {{ order.total_price }} đ</p>
+                <p>Trạng thái: {{ order.status }}</p>
+            </div>
+            <div class="book-action">
+                <div class="btn-container">
+                    <form action="{{ url_for('handle_order_status') }}" method="post" id="form{{ order.id }}">
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        {% if order.status == 'Pending' %}
+                             <button type="submit" name="action" value="accept" class="book-accept">Chấp nhận</button>
+                            <button type="submit" name="action" value="revoke" class="book-revoke">Từ chối</button>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+
+
+</body>
+</html>

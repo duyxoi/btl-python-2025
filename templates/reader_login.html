@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        body {
+            background-image: url('static/images/3.jpg'); 
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 50px;
+            font-family: Georgia, serif;
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.5); 
+            padding: 50px;
+            border-radius: 20px;
+            margin: 50px auto;
+            max-width: 300px;
+        }
+
+        form h2 {
+            font-size: 2em;
+            text-align: center;
+        }
+
+        form label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        form input, form select {
+            width: 100%;
+            padding: 15px; 
+            margin-bottom: 20px; 
+            box-sizing: border-box;
+        }
+
+        form .button-container {
+            text-align: center;
+        }
+
+        form button {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 30px;
+            margin-right: 20px; 
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        form button:hover {
+            background-color: #82EE48;
+        }
+        
+        /* CSS để định dạng thông báo lỗi */
+        .flashed-error {
+            color: #333;          
+            font-weight: bold;
+            font-size: 0.9em;      
+            margin-top: -10px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <form action="{{ url_for('reader_login') }}" method="post">
+        <h2>Đăng nhập</h2>
+
+        <label for="email">Tài khoản:</label>
+        <input type="text" id="email" name="email" required>
+
+        <label for="password">Mật khẩu:</label>
+        <input type="password" id="password" name="password" required>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'error' %}
+                        <p class="flashed-error">{{ message }}</p>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="button-container">
+            <button type="submit">Đăng nhập</button>
+            <button type="button" onclick="window.location.href='{{ url_for('registration_form') }}'">Đăng kí</button>
+        </div>
+    </form>
+
+</body>
+</html>

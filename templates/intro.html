@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chào mừng tới thư viện sách</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', serif;
+            background: rgba(0, 0, 0, 0.5) url('static/images/10.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            padding: 50px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 4em;
+            margin-bottom: 50px;
+        }
+
+        .role-selection {
+            display: flex;
+            gap: 100px; 
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .role-selection label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.9em; 
+        }
+
+        .role-selection input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #000;
+            border-radius: 3px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .role-selection input[type="radio"]:checked {
+            background-color: #3498db;
+        }
+
+        .select-button {
+            padding: 15px 30px; 
+            font-size: 1.2em; 
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .select-button:hover {
+            background-color: #82EE48;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chào mừng tới thư viện sách</h1>
+        
+        <div class="role-selection">
+            <label>
+                <input type="radio" name="role" value="librarian"> Quản lý
+            </label>
+            <label>
+                <input type="radio" name="role" value="reader"> Người đọc
+            </label>
+        </div>
+        
+        <button class="select-button" onclick="redirectToLogin()">Chọn vai trò</button>
+    </div>
+
+    <script>
+        function redirectToLogin() {
+            const roles = document.querySelectorAll('input[name="role"]');
+            let selectedRole = '';
+    
+            roles.forEach(role => {
+                if (role.checked) {
+                    selectedRole = role.value;
+                }
+            });
+    
+            if (selectedRole !== '') {
+                window.location.href = `${selectedRole}_login`;
+            } else {
+                alert('Please select a role before proceeding.');
+            }
+        }
+    </script>
+    
+</body>
+</html>

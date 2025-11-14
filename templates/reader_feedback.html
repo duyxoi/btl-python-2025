@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đánh giá</title>
+    <style>
+        /* CSS CƠ SỞ */
+        body {
+            font-family: 'Times New Roman', cursive;
+            margin: 0;
+            padding: 0;
+            background: url('static/images/9.jpg') center/cover no-repeat fixed;
+        }
+
+        header {
+            background-color: #333;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+            text-transform: uppercase;
+        }
+
+        /* [START] SỬA LỖI FLEXBOX CHO NAV */
+        nav {
+            background-color: #4CAF50;
+            overflow: hidden;
+            display: flex; /* Kích hoạt Flexbox */
+            justify-content: space-between; /* Đẩy links và form ra hai bên */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 0 16px; 
+        }
+
+        .nav-links {
+            display: flex; /* Nhóm các liên kết lại */
+            align-items: center;
+        }
+
+        nav a {
+            display: block; /* Bỏ float */
+            color: white;
+            text-align: center;
+            padding: 14px 0; /* Chỉ padding dọc */
+            margin-right: 16px; /* Khoảng cách giữa các liên kết */
+            text-decoration: none;
+            transition: background-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        nav a:hover {
+            background-color: #333;
+            color: #4CAF50;
+        }
+
+        /* Sửa form (bỏ float: right) */
+        form { 
+            margin: 0;
+            padding: 14px 0; /* Padding khớp với nav a */
+            display: flex;
+            align-items: center;
+        }
+
+        form label {
+            margin-right: 8px;
+            color: white;
+        }
+
+        form input[type="text"] {
+            width: 150px; /* Giảm chiều rộng để phù hợp */
+            padding: 8px;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        form button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 5px;
+        }
+
+        form button:hover {
+            background-color: #333;
+        }
+        /* [END] SỬA LỖI FLEXBOX CHO NAV */
+
+        section {
+            margin: 20px auto;
+            width: 80%;
+            max-width: 600px; 
+            text-align: center;
+        }
+
+        section label {
+            margin-right: 8px;
+            color: white;
+            display: block;
+        }
+
+        section textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px auto;
+            border: 1px solid #4CAF50;
+            border-radius: 4px;
+            resize: none;
+        }
+
+        section input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            margin: 0 auto;
+        }
+
+        section input[type="submit"]:hover {
+            background-color: #333;
+        }
+
+        p {
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        .welcome-message-container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-message {
+            margin-top: 20px;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Đánh giá</h1>
+    </header>
+
+    <nav>
+        <div class="nav-links"> <a href="{{ url_for('reader_dashboard') }}">Trang chủ</a>
+            <a href="{{ url_for('browse_books') }}">Khám phá sách</a>
+            <a href="{{ url_for('browse_categories') }}">Khám phá thể loại</a>
+            <a href="{{ url_for('cart') }}">Giỏ hàng</a>
+            <a href="{{ url_for('my_orders') }}">Sách của tôi</a>
+            <a href="{{ url_for('reader_feedback') }}">Đánh giá</a>
+            <a href="{{ url_for('user_profile') }}">Thông tin cá nhân</a>
+            <a href="{{ url_for('reader_logout') }}">Đăng xuất</a>
+        </div>
+
+        <form action="{{ url_for('search_results') }}" method="post">
+            <label for="search">Tìm kiếm:</label>
+            <input type="text" id="search" name="search" placeholder="Tên sách bạn muốn tìm...">
+            <button type="submit">Tìm kiếm</button>
+        </form>
+    </nav>
+    
+    <section>
+        <div class="welcome-message-container">
+            <div class="welcome-message">
+                <p><strong>Chúng tôi trân trọng ý kiến của bạn! Vui lòng để lại phản hồi bên dưới:</strong></p>
+            </div>
+        </div>
+        <form action="{{ url_for('reader_feedback') }}" method="POST">
+            <label for="feedback"></label>
+            <textarea id="feedback" name="feedback" rows="10" placeholder="Viết phản hồi của bạn tại đây..." required></textarea>
+            <input type="submit" value="Submit Feedback">
+        </form>
+    </section>
+
+</body>
+</html>
