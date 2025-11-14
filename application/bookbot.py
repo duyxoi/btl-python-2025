@@ -2,7 +2,7 @@
 # pyright: reportAttributeAccessIssue=false, reportUnknownMemberType=false
 
 import os, json, re, difflib, unicodedata
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, Optional
 
 from flask import Blueprint, request, jsonify, render_template, current_app
 from sqlalchemy import or_, func, desc, cast, Integer
@@ -30,160 +30,6 @@ def _norm(s: str) -> str:
     s = re.sub(r"[^a-z0-9\s]", " ", s)  # bỏ ký tự lạ
     s = re.sub(r"\s+", " ", s).strip()
     return s
-def _sent_split_vi(text: str) -> List[str]:
-    """Tách câu đơn giản cho tiếng Việt."""
-    if not text:
-        return []
-    # tách theo . ! ? … và xuống dòng
-    parts = re.split(r"(?<=[\.\!\?…])\s+|\n+", text.strip())
-    return [p.strip() for p in parts if p and len(p.strip()) > 1]
-
-def _fallback_bullets(text: str, max_bullets: int = 5, max_words: int = 28) -> List[str]:
-    """Tóm tắt dự phòng: lấy 3–5 câu đầu, rút ngắn mỗi câu ~28 từ."""
-    sents = _sent_split_vi(text)
-    if not sents:
-        return []
-    bullets: List[str] = []
-    for s in sents[:max_bullets]:
-        ws = s.split()
-        if len(ws) > max_words:
-            s = " ".join(ws[:max_words]) + "…"
-        bullets.append(s)
-    return bullets
-
-def _summarize_text_bullets(src_text: str, max_bullets: int = 5) -> List[str]:
-    """Ưu tiên LLM (Gemini) để tóm tắt an toàn từ mô tả; lỗi -> fallback."""
-    if not src_text:
-        return []
-    source = src_text.strip()
-    # tránh prompt quá dài
-    if len(source) > 4000:
-        source = source[:4000] + "…"
-    # Nếu thiếu API key, fallback luôn
-    if not os.getenv("GEMINI_API_KEY"):
-        return _fallback_bullets(source, max_bullets)
-    try:
-        model_name = current_app.config.get("GEMINI_MODEL", "models/gemini-2.5-flash")
-        model = genai.GenerativeModel(
-            model_name,
-            generation_config={
-                "response_mime_type": "application/json",
-                "temperature": 0.2,
-                "top_p": 0.8,
-                "max_output_tokens": 384,
-            },
-        )
-        prompt = f"""
-Bạn là BookBot. Nhiệm vụ: TÓM TẮT NỘI DUNG SÁCH BẰNG TIẾNG VIỆT, KHÔNG SPOILER.
-Chỉ sử dụng đúng đoạn Nguồn bên dưới, cấm suy diễn/bổ sung ngoài Nguồn.
-Đầu ra: 3–5 gạch đầu dòng ngắn gọn, súc tích.
-
-Nguồn:
-\"\"\"{source}\"\"\"
-
-Trả JSON:
-{{ "bullets": ["...", "..."] }}
-"""
-        resp = model.generate_content(prompt)
-        js = _extract_json((resp.text or "").strip()) or {}
-        bullets = js.get("bullets") if isinstance(js, dict) else None
-        if isinstance(bullets, list) and bullets:
-            # lọc rỗng và giới hạn số lượng
-            bullets = [str(x).strip() for x in bullets if str(x).strip()]
-            return bullets[:max_bullets]
-    except Exception:
-        current_app.logger.exception("Gemini summarize error")
-    return _fallback_bullets(source, max_bullets)
-
-def _search_books_for_summary(user_text: str, limit: int = 5) -> List[Product]:
-    if not user_text:
-        return []
-    # Tách token từ bản gốc (giữ dấu), lọc bằng dạng _norm để bỏ từ nhiễu
-    raw_words = re.split(r"\s+", user_text.strip())
-    stop_norm = {
-        "tom", "tat", "tom tat", "tong", "tong tat",
-        "noi", "dung", "noi dung",
-        "gioi", "thieu", "gioi thieu",
-        "cuon", "quyen", "sach", "ve",
-        "plot", "summary"
-    }
-    tokens: List[str] = []
-    for w in raw_words:
-        if not w:
-            continue
-        wn = _norm(w)
-        if wn in stop_norm:
-            continue
-        # bỏ token quá ngắn
-        if len(w.strip()) <= 1:
-            continue
-        tokens.append(w.strip())
-    # fallback: nếu lọc hết thì dùng lại câu gốc
-    if not tokens:
-        tokens = [user_text.strip()]
-    P: Any = Product
-    q = Product.query
-    # Mỗi token: phải xuất hiện ở ít nhất một trong các cột -> filter nối tiếp (AND)
-    for tok in tokens:
-        like = f"%{tok}%"
-        per_tok = []
-        if hasattr(P, "name"):        per_tok.append(P.name.ilike(like))
-        if hasattr(P, "author"):      per_tok.append(P.author.ilike(like))
-        if hasattr(P, "description"): per_tok.append(P.description.ilike(like))
-        if hasattr(P, "category"):    per_tok.append(P.category.ilike(like))
-        if per_tok:
-            q = q.filter(or_(*per_tok))
-    return q.limit(limit).all()
-
-def _handle_summary_intent(user_text: str) -> Optional[Dict]:
-    """Intent: tóm tắt nội dung sách theo từ khóa người dùng."""
-    t = _norm(user_text)
-    # từ khóa kích hoạt
-    trigger = any(k in t for k in ["tom tat", "tong tat", "noi dung", "gioi thieu", "plot", "summary"])
-    if not trigger:
-        return None
-    books = _search_books_for_summary(user_text, limit=5)
-    if not books:
-        return {"answer": "Mình chưa tìm thấy tựa sách phù hợp để tóm tắt trong kho."}
-    # Chọn kết quả tốt nhất theo độ giống name với truy vấn đã bỏ từ khóa
-    t_clean = re.sub(r"\b(tom tat|tong tat|noi dung|gioi thieu|plot|summary)\b", " ", t).strip()
-    best = None
-    best_score = -1.0
-    for b in books:
-        name = _norm(getattr(b, "name", "") or "")
-        score = difflib.SequenceMatcher(None, t_clean, name).ratio() if name else 0.0
-        if score > best_score:
-            best = b; best_score = score
-    # Nếu score quá thấp nhưng chỉ có 1 cuốn, vẫn tóm tắt; nếu >1 mà score thấp, liệt kê để người dùng chọn
-    if len(books) > 1 and best_score < 0.35:
-        opts = [{
-            "title": getattr(x, "name", "N/A"),
-            "author": getattr(x, "author", None) or "N/A",
-            "qty": int(getattr(x, "quantity", 0) or 0)
-        } for x in books[:5]]
-        return {
-            "answer": "Mình tìm thấy vài tựa sách có thể trùng. Bạn muốn tóm tắt cuốn nào?",
-            "books": opts
-        }
-    # Tóm tắt từ mô tả
-    desc = (getattr(best, "description", None) or "").strip()
-    title = getattr(best, "name", "N/A")
-    author = getattr(best, "author", None) or "N/A"
-    qty = int(getattr(best, "quantity", 0) or 0)
-    if not desc:
-        return {"answer": f"Chưa có dữ liệu mô tả để tóm tắt cho “{title}”."}
-    bullets = _summarize_text_bullets(desc, max_bullets=5)
-    if not bullets:
-        return {"answer": f"Mình chưa thể tóm tắt “{title}” lúc này. Bạn thử lại sau nhé."}
-    return {
-        "summary": {
-            "title": title,
-            "author": author,
-            "bullets": bullets,
-            "in_stock": qty > 0,
-            "qty": qty
-        }
-    }
 
 def _qty_col():
     """Cột số lượng an toàn kiểu số nguyên, tránh NULL/chuỗi."""
@@ -274,9 +120,7 @@ def _find_category(user_text: str) -> Optional[Category]:
 # --------------- DB-first intents ---------------
 def _handle_inventory_intents(user_text: str) -> Optional[Dict]:
     t = _norm(user_text)
-    summary_res = _handle_summary_intent(user_text)
-    if summary_res:
-        return summary_res
+
     # 1) Đếm đầu sách, bản còn hàng
     if any(k in t for k in ["bao nhieu", "so luong", "tong", "co bao nhieu"]) and ("sach" in t or "dau sach" in t):
         total_titles = db.session.query(Product.id).count()
